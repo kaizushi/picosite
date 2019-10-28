@@ -144,12 +144,15 @@ function getItems() {
 }
 
 function getOldItems() {
-	if (file_exists() === False) {
-		$toreturn['%%NOOLD'] == "%%NOOLD%%";
-		return $toreturn;
+	debugout("getOldItems: method called");
+	$items = [];
+
+	if (file_exists("itemlist-old.txt") === false) {
+		debugout("THE ITEMLIST DOES NOT EXIST");
+		$items['NOFILE'] = true;
+		return $items;
 	}
 
-	$items = [];
 	$data = file_get_contents("itemlist-old.txt");
 	$lines = explode("\n", $data);
 	foreach ($lines as $line) {
@@ -220,7 +223,7 @@ function parsePrint($text) {
 function printPrice($itemname, $usdprice, $oldprice) {
 	$oldmode = true;
 
-	if ($oldprice === "") {
+	if ($oldprice === "NOFILE") {
 		$oldmode = false;
 	}
 
@@ -244,9 +247,10 @@ function printallPrices() {
 	$timebtc = filemtime("data/btc-price");
 	$timexmr = filectime("data/xmr-price");
 
-	if ($olditems["%%NOOLD%%"] === "%%NOOLD%%") {
+	if ($olditems['NOFILE'] === true) {
 		debugout("THERE IS NO OLD FILE!!!");
 		$oldmode = false;
+		unset($olditems["NOFILE"]);
 	}
 
 	echo "<p><strong>BTC " . date("G:i:s d/m/Y", $timebtc) . ": $" . getpriceBTC() . "<br>\n";
@@ -255,7 +259,7 @@ function printallPrices() {
 
 	debugout("printallPrices oldmode " . $oldmode);
 	if ($oldmode) {
-		echo "<tr><td width=\"50%\"><strong>Name of Item</strong></td><td><strong>Old price</strike></td><td>Price</td><td>Bitcoin cost</td><td>Monero cost</td></tr>\n";
+		echo "<tr><td width=\"50%\"><strong>Name of Item</strong></td><td><strong>Old price</strong></td><td>Price</td><td>Bitcoin cost</td><td>Monero cost</td></tr>\n";
 	} else {
 		echo "<tr><td width=\"50%\"><strong>Name of Item</strong></td><td>Price</td><td>Bitcoin cost</td><td>Monero cost</td></tr>\n";
 	}
@@ -271,7 +275,7 @@ function printallPrices() {
 		}
 
 		if (!$exists) $oldprice = "XX.XX";
-		if (!$oldmode) $oldprice = "";
+		if (!$oldmode) $oldprice = "NOFILE";
 		printPrice($name, $price, $oldprice);
 	}
 	echo "</table>\n";
@@ -551,7 +555,6 @@ table {
 <?php pageBody(); ?>
 </tr></td></table>
 <br><br><br><br><br><br>
-<p><?php echo date("Y") . " Kaizu Shibata, server time " . date("G:i:s d/m/y") . " UTC"; ?>
+<p><?php echo date("Y") . " Mr Website Creator, server time " . date("G:i:s d/m/y") . " UTC"; ?>
 <p><i>Powered by Kaizu's <a href="https://github.com/kaizushi/picosite"><?php echo SOFTNAME; ?></a>, <a href="https://www.nginx.com/">nginx</a>, PHP, and Gentoo!</i></p>
-<h3>Sponsor of <a href="http://infantilefb6ovh4.onion/">Infantile</a></h3>
 </body></html>
