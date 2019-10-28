@@ -1,2 +1,3 @@
 The 28th of October 2019:
 	* I have made the source code release not metion Kaizushi's Little Onion Server.
+	* I have made it so picosite only displays old prices if a file for them exists.
