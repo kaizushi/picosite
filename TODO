@@ -1,5 +1,6 @@
 === Things to change in next version ===
 
+* Fix the display of items in the codebase so old prices hide properly when 'itemlist-old.txt' does not exist on the server.
 * Not require itemlist-old.txt
 * Not print old prices whe itemlist-old.txt doesn't exist.
 * Check everything actually is optional like I say.

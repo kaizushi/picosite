@@ -5,7 +5,7 @@
 define("SITENAME", "A Fresh new picosite");
 define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
-define("DEBUGOUT", false); //useless usually without adding your own debugout() calls to trace code
+define("DEBUGOUT", true); //useless usually without adding your own debugout() calls to trace code
 
 include_once("parser.php");
 
@@ -144,6 +144,11 @@ function getItems() {
 }
 
 function getOldItems() {
+	if (file_exists() === False) {
+		$toreturn['%%NOOLD'] == "%%NOOLD%%";
+		return $toreturn;
+	}
+
 	$items = [];
 	$data = file_get_contents("itemlist-old.txt");
 	$lines = explode("\n", $data);
@@ -213,26 +218,47 @@ function parsePrint($text) {
 }
 
 function printPrice($itemname, $usdprice, $oldprice) {
+	$oldmode = true;
+
+	if ($oldprice === "") {
+		$oldmode = false;
+	}
+
 	$btc = getpriceBTC();
 	$xmr = getpriceXMR();
 
 	$btcp = number_format($usdprice / $btc, 4);
 	$xmrp = number_format($usdprice / $xmr, 3);
 
-	echo "<tr><td width=\"50%\">$itemname</td><td>\$<strike>$oldprice</strike></td><td>\$$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
+	if ($oldmode) {
+		echo "<tr><td width=\"50%\">$itemname</td><td>\$<strike>$oldprice</strike></td><td>\$$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
+	} else { 
+		echo "<tr><td width=\"50%\">$itemname</td><td>\$$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
+	}
 }
 
 function printallPrices() {
+	$oldmode = true;
 	$items = getItems();
 	$olditems = getOldItems();
 	$timebtc = filemtime("data/btc-price");
 	$timexmr = filectime("data/xmr-price");
 
+	if ($olditems["%%NOOLD%%"] === "%%NOOLD%%") {
+		debugout("THERE IS NO OLD FILE!!!");
+		$oldmode = false;
+	}
+
 	echo "<p><strong>BTC " . date("G:i:s d/m/Y", $timebtc) . ": $" . getpriceBTC() . "<br>\n";
 	echo "XMR " . date("G:i:s d/m/Y", $timexmr) . ": $" . getpriceXMR() . "</strong>\n";
 	echo "<table>\n";
 
-	echo "<tr><td width=\"50%\"><strong>Name of Item</strong></td><td><strong>Old price</strike></td><td>Price</td><td>Bitcoin cost</td><td>Monero cost</td></tr>\n";
+	debugout("printallPrices oldmode " . $oldmode);
+	if ($oldmode) {
+		echo "<tr><td width=\"50%\"><strong>Name of Item</strong></td><td><strong>Old price</strike></td><td>Price</td><td>Bitcoin cost</td><td>Monero cost</td></tr>\n";
+	} else {
+		echo "<tr><td width=\"50%\"><strong>Name of Item</strong></td><td>Price</td><td>Bitcoin cost</td><td>Monero cost</td></tr>\n";
+	}
 
 	$oldprice=0;
 	foreach ($items as $name => $price) {
@@ -245,6 +271,7 @@ function printallPrices() {
 		}
 
 		if (!$exists) $oldprice = "XX.XX";
+		if (!$oldmode) $oldprice = "";
 		printPrice($name, $price, $oldprice);
 	}
 	echo "</table>\n";
