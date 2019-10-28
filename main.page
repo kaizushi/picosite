@@ -1,0 +1,7 @@
+%%##title=Main Page of New PicoCMS
+<p>You have installed picocms and are now seeing its only page. This page is the main one and it must exist. It is the page that loads at the start of the site.
+<p>I feel generous, you get on this first page the README.txt file presented to you.
+<pre>
+%%##incld=README.txt
+</pre>
+<p>I hope the documentation was helpful to you!
