@@ -1,5 +1,11 @@
-=== Things to change in next version ===
+=== Things to change in future edits ===
 
+The big:
+* Make it detect the Linux disribution and webserver in use to render the site.
+	This will use the webservers version string, and maybe someone else has
+	code for checking what Linux distro is in use.
+
+The small:
 * Not require itemlist-old.txt
 * Not print old prices whe itemlist-old.txt doesn't exist.
 * Check everything actually is optional like I say.
