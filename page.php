@@ -2,10 +2,10 @@
 
 // picosite is almost a CMS, its a light way to have a site.
 
-define("SITENAME", "Kaizushi's Little Onion Server");
-define("SOFTNAME", "picosite 0.09");
+define("SITENAME", "A Fresh new picosite");
+define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
-define("DEBUGOUT", false);
+define("DEBUGOUT", false); //useless usually without adding your own debugout() calls to trace code
 
 include_once("parser.php");
 
