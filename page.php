@@ -5,7 +5,7 @@
 define("SITENAME", "A Fresh new picosite");
 define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
-define("DEBUGOUT", true); //useless usually without adding your own debugout() calls to trace code
+define("DEBUGOUT", false); //useless usually without adding your own debugout() calls to trace code
 
 include_once("parser.php");
 
