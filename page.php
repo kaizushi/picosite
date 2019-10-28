@@ -525,6 +525,6 @@ table {
 </tr></td></table>
 <br><br><br><br><br><br>
 <p><?php echo date("Y") . " Kaizu Shibata, server time " . date("G:i:s d/m/y") . " UTC"; ?>
-<p><i>Powered by Kaizu's <?php echo SOFTNAME; ?>, <a href="https://www.nginx.com/">nginx</a>, PHP, and Gentoo!</i></p>
+<p><i>Powered by Kaizu's <a href="https://github.com/kaizushi/picosite"><?php echo SOFTNAME; ?></a>, <a href="https://www.nginx.com/">nginx</a>, PHP, and Gentoo!</i></p>
 <h3>Sponsor of <a href="http://infantilefb6ovh4.onion/">Infantile</a></h3>
 </body></html>
