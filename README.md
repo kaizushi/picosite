@@ -3,6 +3,8 @@ A secure CMS which only knows how to read files you create using SSH
 
 In only roughly 500 lines of code!
 
+There are two branches 'master' is stable and so you can clone right away. There is another branch where I iteratively change stuff and see what happens called 'fiddling' because I just fiddle around with stuff.
+
 As such this CMS only reads files with very specific extensions, which prevents it being hacked into reading anything from the disk. This CMS is completely free of anything which can change the system or even the webdir. To use the CMS and add content and make a site with it, one creates text files of HTML with some special picosite syntax. I was new to PHP 7.3 when I wrote it and improvised with the HTML and CSS. It seems to render in all good browsers.
 
 It has many features which can be completely ignored. The only essential feature is displaying pages. In pages picosite has its own 'special syntax' which goes in page files you upload or create. You can do much more though, and it comes with Rainbow Dash, to add a dash of my feminimity as on the Intenet, nobody knows you are a girl.
