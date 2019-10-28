@@ -60,7 +60,7 @@ and the filename is the reference used to find to the page in the 'q'
 GET variable. In your page there is a special syntax to then set the
 title of the page as it will display in a browser. It is this...
 
-%%##title=The Page Title
+ %%##title=The Page Title
 
 I used this weird syntax to avoid collisons with anything else, and 
 all the 'special syntax' I mentioned in the feature list is much like
@@ -69,7 +69,11 @@ this and starts with those symbols.
 Then you might want to include something in a page, as such you can use
 this special syntax:
 
-%%##incld=filename.txt
+ %%##incld=filename.txt
+
+Note: do not use the space in front of the syntax examples. Picosite
+includes such as the README.txt one of the main page will run them and
+then the default main.page will render things in a very bizarre way.
 
 You can replace filename.txt with any page, and this does not use the
 PHP include() and I did my own. Dumb pages are safe pages.
@@ -87,7 +91,7 @@ So next you might want a blog on the site, so to do that create a
 page, I suggest you call it blog.page and it must have this special
 syntax...
 
-%%##blogs
+ %%##blogs
 
 This page will now show a list of blogs, and at this point it should
 be empty and display no blogs. To create a blog you must create a
@@ -141,7 +145,7 @@ to show the list. Like the blogs, you should put something around it
 and there should be a title for the page. You should describe your
 products and such. The syntax for showing the price list is:
 
-%%##price=all
+ %%##price=all
 
 One can also display a specific price, and it can get prices from two
 files one for older prices you used to use, and one for the current
@@ -168,7 +172,7 @@ For now you just create a folder called guides and like the blog and the
 price system, you use some special syntax on a page you create. As such
 I recommend creating 'guides.page' and using this:
 
-%%##guide
+ %%##guide
 
 This will create a nice list of guides, and to write a guide you should
 create a folder called 'guides.' With guides translations are supported
