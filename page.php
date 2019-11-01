@@ -251,7 +251,7 @@ function printallPrices() {
 	if (!file_exists("itemlist.txt")) {
 		http_response_code(404);
 		print "<h2>Price list does not exist.</h2>";
-		break;
+		return;
 	}
 	$items = getItems();
 	$olditems = getOldItems();
@@ -457,6 +457,7 @@ function printSubpage($groupname) {
 		parsePrint($lines);
 		echo '<p><a href="/page.php?q=' . $_GET['q']  . '">Back to ' . $grouptitle . '</a>';
 	}
+}
 
 function printFile($file) {
 
