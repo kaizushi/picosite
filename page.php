@@ -5,14 +5,13 @@
 define("SITENAME", "A Fresh new picosite");
 define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
-define("DEBUGOUT", false); //useless usually without adding your own debugout() calls to trace code
 define("CURRENCY_SYM", "$");
 
 include_once("parser.php");
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
-function debugout($msg) {
+function debugout($msg)
 	if (DEBUGOUT) {
 		echo "picosite DEBUG: " . $msg . "\n";
 		file_put_contents("debug.log", $msg . "\n", FILE_APPEND | LOCK_EX);
@@ -93,7 +92,6 @@ function pageTitles($files) {
 	}
 
 	foreach ($files as $file) {
-		debugout("pageTitles(): doing $file");
 		$filesplit = explode(".", $file);
 		$node = $filesplit[0];
 		$nodesplit = explode("/", $node);
@@ -101,14 +99,12 @@ function pageTitles($files) {
 			$node = $nodesplit[1];
 		}
 		$page = file_get_contents(secureGetFile($file));
-		debugout("pageTitles(): opened $file");
 		$lines = explode("\n", $page);
 
 		$hastitle = false;
 
 		foreach ($lines as $line) {
 			if (startsWith($line, "%%##title=")) {
-				debugout("pageTitles(): Title found in $line");
 				$sides = explode("=", $line);
 				$title = $sides[1];
 				$titledRefs[$node] = $title;
@@ -145,11 +141,9 @@ function getItems() {
 }
 
 function getOldItems() {
-	debugout("getOldItems: method called");
 	$items = [];
 
 	if (file_exists("itemlist-old.txt") === false) {
-		debugout("THE ITEMLIST DOES NOT EXIST");
 		$items['NOFILE'] = true;
 		return $items;
 	}
@@ -175,39 +169,38 @@ function getPageFile($subpagedir = "none") {
 
 	if (is_null($_GET['q']) || $_GET['q'] === "") $_GET['q'] = 'main';
 
-	if (is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp']) {
+	if (is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = $_GET["q"] . ".page";
 	}
 
-	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp']) {
+	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = $_GET["q"] . "." . $_GET["l"] . ".trans.page";
 	}
 
-	if (is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp']) {
+	if (is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = "guides/" . $_GET['g'] . ".guide.page";
 	}
 
-	if (!is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp']) {
+	if (!is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = "guides/" . $_GET['g'] . "." . $_GET['l'] . ".trans.guide.page";
 	}
 
-	if (is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp']) {
+	if (is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = "blogs/" . $_GET['b'] . ".blog.page";
 	}
 
-	if (!is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp']) {
+	if (!is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = "blogs/" . $_GET['b'] . "." . $_GET['l'] . ".trans.blog.page";
 	}
 
-	if (!is_null($_GET['l']) && !is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp']) {
+	if (!is_null($_GET['l']) && !is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = $subpagedir . "/" . $_GET['sp'] . ".sub.page";
 	}
 	
-	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && !is_null($_GET['sp']) {
+	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && !is_null($_GET['sp'])) {
 		$fn = $subpagedir . "/" . $_GET['sp'] . "." . $_GET['l'] . ".trans.sub.page";
 	}
 
-	debugout("getPageFile(): we are using $fn as the page filename");
 	return $fn;
 }
 
@@ -273,7 +266,6 @@ function printallPrices() {
 	echo "XMR " . date("G:i:s d/m/Y", $timexmr) . ": $" . getpriceXMR() . "</strong>\n";
 	echo "<table>\n";
 
-	debugout("printallPrices oldmode " . $oldmode);
 	if ($oldmode) {
 		echo "<tr><td width=\"50%\"><strong>Name of Item</strong></td><td><strong>Old price</strong></td><td>Price</td><td>Bitcoin cost</td><td>Monero cost</td></tr>\n";
 	} else {
@@ -308,12 +300,10 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		$x = 0;
 		foreach ($blogdir as $blog) {
 			if (endsWith($blog, ".blog.page")) {
-				debugout("printBlog(): found $blog");
 				$fileparts = explode('.', $blog);
 				$name = $fileparts[0];
 				$ctime = filemtime('blogs/' . $name . ".blog.page");
 				$blogs[$x + $ctime] = "blogs/" . $name . ".blog.page";
-				debugout("printBlog(): adding to array: blogs/" . $name . ".blog.page");
 				$x++;
 			}
 		}
@@ -327,12 +317,10 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		foreach ($blogs as $time => $blog) {
 			$time = $time - $x;
 			$x++;
-			debugout("printBlog(): node and timestamp $blog at $time");
 			echo '<tr><td>' . date("G:i:s d/m/Y", $time) . '</td>';
 			$thetitle = "Untitled Blog";
 			$thenode = "";
 			foreach ($titled as $node => $title) {
-				debugout("printBlog() title of node is $node as $title");
 				if ($blog === $node) {
 					$thetitle = $title;
 					$thenode = $node;
@@ -365,7 +353,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 function printGuide() {
 	if ($_GET['g'] == null) {
 		echo "<ul>\n";
-		if (!file_exists("guides/") {
+		if (!file_exists("guides/")) {
 			http_reponse_code(404);
 			print "<h2>Guides folder does not exist.</h2>";
 		}
@@ -376,7 +364,6 @@ function printGuide() {
 				if (!is_null($_GET['l'])) {
 					$exploded = explode('.', $guide);
 					$guidelang = $exploded[1];
-					debugout("printGuide() guidelang $guidelang");
 					if ($guidelang === $_GET['l']) {
 						array_push($guides, 'guides/' . $guide);
 					}
@@ -413,7 +400,7 @@ function printSubpage($groupname) {
 	$foreign = false;
 
 	$groupname = limitSysName($groupname); //this stops injection
-	$lang = limitSysName($(_GET['l']));
+	$lang = limitSysName($_GET['l']));
 
 	$subpages = [];
 
@@ -573,7 +560,6 @@ function langLinks() {
 	$relations = explode("\n", $config);
 	$langs = [];
 	foreach ($relations as $relation) {
-		debugout("langLinks() \$relation: $relation");
 		$splitted = explode(',', $relation);
 		$code = $splitted[0];
 		$name = $splitted[1];
