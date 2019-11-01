@@ -14,7 +14,6 @@ The big:
 	Also one should be able to write a template in BBCode for all the pages.
 
 The small:
-* Not require itemlist-old.txt
-* Not print old prices whe itemlist-old.txt doesn't exist.
+* Make it so one can make blogs use access time or creation time
 * Check everything actually is optional like I say.
 * Create a setting for the base currency symbol.
