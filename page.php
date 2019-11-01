@@ -19,7 +19,7 @@ function debugout($msg) {
 	}
 }
 
-function onlyFile($string) {
+function limitSysName($string) {
 	//dumb method name
 	$newstring = preg_replace("/[^A-Za-z0-9.-]/","",$string);
 	return $newstring;
@@ -43,11 +43,11 @@ function secureGetFile($filename) {
 	}
 
 	if ($fileparts[0] === "guides") {
-		$file = "guides/" . onlyFile($filename);
+		$file = "guides/" . limitSysName($filename);
 	} else if ($fileparts[0] === "blogs") {
-		$file = "blogs/" . onlyFile($filename);
+		$file = "blogs/" . limitSysName($filename);
 	} else {
-		$file = onlyFile($filename);
+		$file = limitSysName($filename);
 	}
 
 	return $file;
@@ -167,36 +167,45 @@ function getOldItems() {
 	return $items;
 }
 
-function getPageFile() {
+function getPageFile($subpagedir = "none") {
+	//This method is a mess, but is another thing for security. This makes
+	//sure that files opened are somewhat hardcoded. It can be a tricky thing
+	//to change.
 	$fn = "";
 
 	if (is_null($_GET['q']) || $_GET['q'] === "") $_GET['q'] = 'main';
 
-	if (is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b'])) {
+	if (is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp']) {
 		$fn = $_GET["q"] . ".page";
 	}
 
-	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b'])) {
+	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp']) {
 		$fn = $_GET["q"] . "." . $_GET["l"] . ".trans.page";
 	}
 
-	if (is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b'])) {
+	if (is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp']) {
 		$fn = "guides/" . $_GET['g'] . ".guide.page";
 	}
 
-	if (!is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b'])) {
+	if (!is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp']) {
 		$fn = "guides/" . $_GET['g'] . "." . $_GET['l'] . ".trans.guide.page";
 	}
 
-	if (is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b'])) {
+	if (is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp']) {
 		$fn = "blogs/" . $_GET['b'] . ".blog.page";
 	}
 
-	if (!is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b'])) {
+	if (!is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp']) {
 		$fn = "blogs/" . $_GET['b'] . "." . $_GET['l'] . ".trans.blog.page";
 	}
 
-	if (!file_exists($fn)) $fn = "404.inc.php";
+	if (!is_null($_GET['l']) && !is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp']) {
+		$fn = $subpagedir . "/" . $_GET['sp'] . ".sub.page";
+	}
+	
+	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && !is_null($_GET['sp']) {
+		$fn = $subpagedir . "/" . $_GET['sp'] . "." . $_GET['l'] . ".trans.sub.page";
+	}
 
 	debugout("getPageFile(): we are using $fn as the page filename");
 	return $fn;
@@ -245,13 +254,17 @@ function printPrice($itemname, $usdprice, $oldprice) {
 
 function printallPrices() {
 	$oldmode = true;
+	if (!file_exists("itemlist.txt")) {
+		http_response_code(404);
+		print "<h2>Price list does not exist.</h2>";
+		break;
+	}
 	$items = getItems();
 	$olditems = getOldItems();
 	$timebtc = filemtime("data/btc-price");
 	$timexmr = filectime("data/xmr-price");
 
 	if ($olditems['NOFILE'] === true) {
-		debugout("THERE IS NO OLD FILE!!!");
 		$oldmode = false;
 		unset($olditems["NOFILE"]);
 	}
@@ -286,6 +299,10 @@ function printallPrices() {
 
 function printBlog($justone = False, $amount = 0, $start = 0) {
 	if ($_GET['b'] == null) {
+		if (!file_exists("blogs/")) {
+			http_response_code(404);
+			print "<h2>Blog directory does not exist.</h2>";
+		}
 		$blogdir = scandir("blogs/");
 		$blogs = [];
 		$x = 0;
@@ -336,6 +353,10 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 	} else {
 		if ($justone) return;
 		$file = getPageFile();
+		if (!file_exists($file)) {
+			http_response_code(404);
+			echo "<h2>Blog not found in the blogs folder</h2>";
+		}
 		$lines = explode("\n", $file);
 		parsePrint($lines);
 	}
@@ -344,6 +365,10 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 function printGuide() {
 	if ($_GET['g'] == null) {
 		echo "<ul>\n";
+		if (!file_exists("guides/") {
+			http_reponse_code(404);
+			print "<h2>Guides folder does not exist.</h2>";
+		}
 		$guidesdir = scandir("guides/");
 		$guides = [];
 		foreach ($guidesdir as $guide) {
@@ -384,6 +409,67 @@ function printGuide() {
 	}
 }
 
+function printSubpage($groupname) {
+	$foreign = false;
+
+	$groupname = limitSysName($groupname); //this stops injection
+	$lang = limitSysName($(_GET['l']));
+
+	$subpages = [];
+
+	if (!file_exists($groupname . '/')) {
+		http_response_code(404);
+		print "<h2>Subpage called when directory does not exist</h2>";
+		return;
+	}
+
+	if (is_null($_GET['sp']) {
+		$subpagesdir = scandir($groupname . '/');
+		foreach($subpagesdir as $subpage) {
+			if (endsWith($subpage, ".trans.sub.page")) {
+				if (!is_null[$_GET['l']) {
+					$exploded = explode('.', $subpage);
+					$thissub = $exploded[1];
+					$thislang = $exploded[2];
+					if ($thislang === $_GET['l']) {
+						array_push($subpages, $groupname . $thislang . '/' . $thissub);
+					}
+				}
+			} else if (endsWith($guide, ".sub.page")) {
+				if (is_null($_GET['l'])) {
+					$exploded = explode('.', $subpage);
+					$thissub = $exploded[1];
+					array_push($subpages, $groupname . '/' . $thissub);
+				}
+			}
+		}
+	 
+
+		$titled = pageTitles($subpages);
+	
+		foreach($titled as $node => $title) {
+ 			if (is_null($_GET['l')) {
+		 			echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node .  '">' . $title . "</a></li>";
+			} else {
+				echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . '&l=' .   '">' . $title . "</a></li>";
+			}
+			echo "\n";
+		}
+		echo "</ul>";
+	
+	} else {
+		$file = getPageFile($groupname);
+		if (!file_exists($file) {
+			http_response_code(404);
+			print "<h2>Subpage called but file does not exist</h2>";
+			return;
+		}
+		$grouptitle = getPageTitle($file);
+		$lines = explode("\n", $file);
+		parsePrint($lines);
+		echo '<p><a href="/page.php?q=' . $_GET['q']  . '">Back to ' . $grouptitle . '</a>';
+	}
+
 function printFile($file) {
 
 	if (file_exists($file)) {
@@ -403,6 +489,11 @@ function printFile($file) {
 					$incl = $exploded[1];
 					printFile($incl);
 				}
+				if (startsWith($line, "%%##subpg=")) {
+					$expoded = $explode("=", $line);
+					$subpage = $exploded[1];
+					printSubpage($subpage);
+				}
 				if (startsWith($line, "%%##guide")) {
 					printGuide();
 				}
@@ -418,19 +509,14 @@ function printFile($file) {
 			}
 		}
 	} else {
-		echo "<p>This page does not exist</p>";
+		http_response_code(404);
+		print("<h2>File not found for this page</h2>");
 	}
 }
 
 function pageBody() {
 	$pagefile = getPageFile();
-
-	if (!file_exists($pagefile)) {
-		http_response_code(404);
-		echo "<h2>404 Page doesn't exist</h2>";
-	} else {
-		printFile($pagefile);
-	}
+	printFile($pagefile);
 }
 
 function pageLinks() {
