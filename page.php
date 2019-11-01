@@ -6,6 +6,7 @@ define("SITENAME", "A Fresh new picosite");
 define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
 define("DEBUGOUT", false); //useless usually without adding your own debugout() calls to trace code
+define("CURRENCY_SYM", "$");
 
 include_once("parser.php");
 
@@ -233,10 +234,12 @@ function printPrice($itemname, $usdprice, $oldprice) {
 	$btcp = number_format($usdprice / $btc, 4);
 	$xmrp = number_format($usdprice / $xmr, 3);
 
+	$sym = CURRENCY_SYM;
+
 	if ($oldmode) {
-		echo "<tr><td width=\"50%\">$itemname</td><td>\$<strike>$oldprice</strike></td><td>\$$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
+		echo "<tr><td width=\"50%\">$itemname</td><td>$sym<strike>$oldprice</strike></td><td>\$$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
 	} else { 
-		echo "<tr><td width=\"50%\">$itemname</td><td>\$$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
+		echo "<tr><td width=\"50%\">$itemname</td><td>$sym$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
 	}
 }
 
