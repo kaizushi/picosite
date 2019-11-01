@@ -5,13 +5,14 @@
 define("SITENAME", "A Fresh new picosite");
 define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
+define("DEBUGOUT", true);
 define("CURRENCY_SYM", "$");
 
 include_once("parser.php");
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
-function debugout($msg)
+function debugout($msg) {
 	if (DEBUGOUT) {
 		echo "picosite DEBUG: " . $msg . "\n";
 		file_put_contents("debug.log", $msg . "\n", FILE_APPEND | LOCK_EX);
@@ -400,7 +401,7 @@ function printSubpage($groupname) {
 	$foreign = false;
 
 	$groupname = limitSysName($groupname); //this stops injection
-	$lang = limitSysName($_GET['l']));
+	$lang = limitSysName($_GET['l']);
 
 	$subpages = [];
 
@@ -410,11 +411,11 @@ function printSubpage($groupname) {
 		return;
 	}
 
-	if (is_null($_GET['sp']) {
+	if (is_null($_GET['sp'])) {
 		$subpagesdir = scandir($groupname . '/');
 		foreach($subpagesdir as $subpage) {
 			if (endsWith($subpage, ".trans.sub.page")) {
-				if (!is_null[$_GET['l']) {
+				if (!is_null($_GET['l'])) {
 					$exploded = explode('.', $subpage);
 					$thissub = $exploded[1];
 					$thislang = $exploded[2];
@@ -435,7 +436,7 @@ function printSubpage($groupname) {
 		$titled = pageTitles($subpages);
 	
 		foreach($titled as $node => $title) {
- 			if (is_null($_GET['l')) {
+ 			if (is_null($_GET['l'])) {
 		 			echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node .  '">' . $title . "</a></li>";
 			} else {
 				echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . '&l=' .   '">' . $title . "</a></li>";
@@ -446,7 +447,7 @@ function printSubpage($groupname) {
 	
 	} else {
 		$file = getPageFile($groupname);
-		if (!file_exists($file) {
+		if (!file_exists($file)) {
 			http_response_code(404);
 			print "<h2>Subpage called but file does not exist</h2>";
 			return;
