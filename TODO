@@ -14,6 +14,8 @@ The big:
 	Also one should be able to write a template in BBCode for all the pages.
 
 The small:
+* Make it so one can name to main language of the site
+* No more 404s for missing translations. Say translation not available.
 * Make it so one can make blogs use access time or creation time
 * Check everything actually is optional like I say.
 * Create a setting for the base currency symbol.
