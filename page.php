@@ -5,8 +5,8 @@
 define("SITENAME", "A Fresh new picosite");
 define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
-define("DEBUGOUT", true);
-define("TRACEOFF", false); 
+define("DEBUGOUT", false);
+define("TRACEOFF", true); 
 define("CURRENCY_SYM", "$");
 
 include_once("parser.php");
@@ -351,12 +351,13 @@ function printallPrices() {
 function printBlog($justone = False, $amount = 0, $start = 0) {
 	if ($_GET['b'] == null) {
 		if (!file_exists("blogs/")) {
-			http_response_code(404);
-			print "<h2>Blog directory does not exist.</h2>";
+			return;
 		}
+
 		$blogdir = scandir("blogs/");
 		$blogs = [];
 		$x = 0;
+
 		foreach ($blogdir as $blog) {
 			if (endsWith($blog, ".blog.page")) {
 				$fileparts = explode('.', $blog);
@@ -371,6 +372,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		$titled = pageTitles($blogs);
 		$blogs = nodestrip($blogs);
 
+		
 		echo '<table>';
 		$x = 0;
 		foreach ($blogs as $time => $blog) {
@@ -398,12 +400,16 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		}
 		echo "</table>\n";
 	} else {
+		if (!file_exists("blogs/")) return;
 		if ($justone) return;
+
 		$file = getPageFile();
+
 		if (!file_exists($file)) {
 			http_response_code(404);
 			echo "<h2>Blog not found in the blogs folder</h2>";
 		}
+
 		$lines = explode("\n", $file);
 		printParse($lines);
 	}
