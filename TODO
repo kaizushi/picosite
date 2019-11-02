@@ -1,6 +1,11 @@
 === Things to change in future edits ===
 
 The big:
+* Make the price list system site wide and accept inserting items from the pricelist.
+	This will require making machine names on the price list. To maintain backward
+	comptability this will 'pricemap.txt' and convert to human readable names
+	on the pricelist. One then will be able to include prices with exchange rates
+	on any page of the site.
 * Make it detect the Linux disribution and webserver in use to render the site.
 	This will use the webservers version string, and maybe someone else has
 	code for checking what Linux distro is in use.
@@ -13,8 +18,19 @@ The big:
 * Create a parser so one can declare with a new picosite syntax for using BBCode
 	instead of HTML to write pages. This makes it less of a learning curve.
 	Also one should be able to write a template in BBCode for all the pages.
+* Make a picocode so one can create an automatic link with the machine name of a
+	subpage for any category that exists. This may also have other formats as
+	a way of making other special links.
+* Once done with the automatic link picocode implement a way for links to display
+	status of if the site is up. Sites will have to be mentioned in a datafile
+	that is written by a cron script. This will allow hidden services to be
+	listed and people will know if they are working.
 
 The small:
-* Make it so one can name to main language of the site
+* Make it so one can name the main language of the site
 * Make it so one can make blogs use access time or creation time
 * Check everything actually is optional like I say.
+* Make the Latest Blog only display when there is a blog installed.
+* Allow one to place subpages from folders in the menulayout.txt
+* If there is no languages.txt hide the language bar.
+* Make the languages.txt have a default language.

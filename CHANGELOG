@@ -19,4 +19,4 @@ Th 2nd of November 2019:
 	* While doing subpages I have changed a lot of methods and reduced if statement
 	  by making an empty string that is set if a language is selected.
 	* I removed some redundant functions and took out their calls.
-
+	* Made it obvious where one sets the base currency in getprices.php

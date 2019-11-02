@@ -1,6 +1,8 @@
 <?php
 
-define("DATADIR", "/var/www/user/kaizushi/kaizushigdv5mrnz.onion/data");
+define("DATADIR", "data");
+define("BASECUR", "USD");
+#define("BASECUR", "EUR");
 
 function getpriceBTC() {
         $json = file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD");
