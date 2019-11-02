@@ -1,0 +1,81 @@
+===== picosite reference =====
+
+Principles:
+
+* Extremely simple managment where an unstable branch is merged into a
+  stable branch, only when things are clearly working and tested. Big
+  changes are put in their own branches and developed but when this is
+  done the unstable branch for maintaince and improvement is frozen.
+* Backward comptaible always to its stable branch. However the behavi-
+  our of methods for things can improve. Sites will always work but
+  they may change. Things can improve but old configs must work within
+  reason and display a somewhat similar site.
+* Read only calls only to the system in page.php only. All other scr-
+  ipts that come with this software are for the cron user, or some con-
+  text outside of control of the webserver and PHP process for page.php
+* Always capable of hosting the offical Kaizushi's Little Onion Server 
+  webserver with a stable release. This site employs nearly every feat-
+  ure. This should make this software stable and capable.
+* Constricted access to the system for reading files. It should use for
+  requests machine names. These are used with algos that then attach
+  parts of the filename to the machine names, to give it context.
+
+Operation:
+
+* This software operates with methods of two major categories and some
+others. There are get methods which get some kind of data and make it
+simple for the print methods. There are some other assorted methods
+which transform but have no naming convention (that will change).
+There are static methods which specify solid things like syntax so it
+is not repeated.
+* The template calls limited print methods, some other print methods
+are called from other print methods. This is used for picocode that
+add features to pages.
+* The basic release will have an extremely simple template that is bar-
+ren. It makes it obvious obvious how to make your own.
+
+Source code and usage:
+	The source code will be commented so that each method specifies:
+	what inputs it takes, how it transforms, changes, or renders it.
+	This guide is a reference to the source code where things are
+	explained.
+
+(At a later date I will fill this in with the listings)
+
+[You can't find anything in Kaizu code without this]
+Trans methods:
+	Description:
+	    These methods transform things and do regexp for security for
+	    certain points of input. They use the static methods at the
+	    bottom often to use context with data retreival.
+    
+	Listing:
+
+Print methods:
+	Note:
+	  If a method is in both External and Internal it has a interface
+	  which allows for both. Some methods do their own features for
+	  rendering things within a page. 
+
+	Internal:
+	  Description:
+	      Methods here print things that go on other pages that are
+	      printed. They are considered internal and generally extend
+	      pages. They render things like tables of information, lists
+	      anything that serves the construction of a page, and the
+	      
+	  Listing:
+
+	External:
+	  Description:
+	      Methods here print things that go on the template for the
+	      page. This includes things other than the page body.
+
+	  Listing:
+
+Get methods:
+	Memory:
+
+	Filesystem:
+
+Static 

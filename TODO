@@ -27,8 +27,8 @@ The big:
 	listed and people will know if they are working.
 
 The small:
-* Make it so one can name the main language of the site
-* Make it so one can make blogs use access time or creation time
+* Make it so one can name the main language of the site.
+* Make it so one can make blogs use access time or creation time.
 * Check everything actually is optional like I say.
 * Make the Latest Blog only display when there is a blog installed.
 * Allow one to place subpages from folders in the menulayout.txt
