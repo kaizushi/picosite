@@ -16,6 +16,7 @@ function debugout($msg) {
 	if (DEBUGOUT) {
 		echo "picosite DEBUG: " . $msg . "\n";
 		file_put_contents("debug.log", $msg . "\n", FILE_APPEND | LOCK_EX);
+		echo "<br>"
 	}
 }
 
@@ -398,10 +399,9 @@ function printGuide() {
 }
 
 function printSubpage($groupname) {
-	$foreign = false;
-
 	$groupname = limitSysName($groupname); //this stops injection
 	$lang = limitSysName($_GET['l']);
+
 
 	$subpages = [];
 
@@ -435,18 +435,19 @@ function printSubpage($groupname) {
 
 		$titled = pageTitles($subpages);
 	
+		echo "<ul>";
 		foreach($titled as $node => $title) {
- 			if (is_null($_GET['l'])) {
-		 			echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node .  '">' . $title . "</a></li>";
+	 		if (is_null($_GET['l'])) {
+				echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node .  '">' . $title . "</a></li>";
 			} else {
-				echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . '&l=' .   '">' . $title . "</a></li>";
+				echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . '&l=' . $lang . '">' . $title . "</a></li>";
 			}
 			echo "\n";
 		}
 		echo "</ul>";
-	
 	} else {
 		$file = getPageFile($groupname);
+		debugout("printSubpages: we tried getPagefile($groupname) and got this: $file");
 		if (!file_exists($file)) {
 			http_response_code(404);
 			print "<h2>Subpage called but file does not exist</h2>";
@@ -456,11 +457,10 @@ function printSubpage($groupname) {
 		$lines = explode("\n", $file);
 		parsePrint($lines);
 		echo '<p><a href="/page.php?q=' . $_GET['q']  . '">Back to ' . $grouptitle . '</a>';
-	}
+	}	
 }
 
 function printFile($file) {
-
 	if (file_exists($file)) {
 		$content = file_get_contents(secureGetFile($file));
 		$lines = explode("\n", $content);
