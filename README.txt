@@ -62,7 +62,7 @@ what is here are not-existent.
 * Security, having had trouble with vandals of PHP software and some
 	malware, I wrote this so nothing could go wrong. As such the
 	site has no editor, there is no code which can alter the site
-	in picocms. One has to log in with SSH and create files.
+	in picosite One has to log in with SSH and create files.
 
 === Coming Soon ===
 
@@ -500,7 +500,7 @@ To make experimenting easier I will develop a 'reference.txt' and you
 should go have a look because it might just be there.
 
 Anyway, if you have followed all of this guide you have done everything
-in picocms possible, except its infinite page capacity. I hope you enj-
+in picosite possible, except its infinite page capacity. I hope you enj-
 oy it because it can't make changes to the system. That is a point for
 its security bonus. 
 

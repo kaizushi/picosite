@@ -1,8 +1,8 @@
-%%##title=Main Page of New PicoCMS
-<p>PicoCMS is a highly secure CMS because it has no code to change things! One must upload pages or write them in an SSH shell on their webserver.
-<p>PicoCMS has many features but ultimately only requires a main page.
-<p>You have installed picocms and are now seeing its only page. This page is the main one and it must exist. It is the page that loads at the start of the site.
+%%##title=Main Page of New picosite
+<p>picosite is a highly secure CMS because it has no code to change things! One must upload pages or write them in an SSH shell on their webserver.
+<p>picosite has many features but ultimately only requires a main page.
+<p>You have installed picosite and are now seeing its only page. This page is the main one and it must exist. It is the page that loads at the start of the site.
 <pre>
 %%##incld=README.txt
 </pre>
-<p>I hope that documentation was useful and you have your picocms running.
+<p>I hope that documentation was useful and you have your picosite running.
