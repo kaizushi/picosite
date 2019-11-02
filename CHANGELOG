@@ -15,8 +15,9 @@ Th 2nd of November 2019:
 	* I have implemented the picosite picocall for subpages and wrote the infra-
 	  structure for it. It seems to work, and picosite has been changed quite a
 	  lot so now this branch is being moved into fiddling.
+	  [THIS HAS BEEN MERGED FOR UNIT TESTING INTO FIDDLING]
 
 	* While doing subpages I have changed a lot of methods and reduced if statement
 	  by making an empty string that is set if a language is selected.
 	* I removed some redundant functions and took out their calls.
-	* Made it obvious where one sets the base currency in getprices.php
+	* Made it obvious where one sets the base currency in getprices.php with a global.
