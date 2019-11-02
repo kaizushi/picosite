@@ -1,3 +1,20 @@
 The 28th of October 2019:
 	* I have made the source code release not metion Kaizushi's Little Onion Server.
 	* I have made it so picosite only displays old prices if a file for them exists.
+Th 2nd of November 2019:
+	* Created a branch for working on the big feature subpage.
+	* I have added a subpage feature but not tested it.
+	* Subpage feature required a change to the 404 system, also the 404 page in a
+	  file was inconsistent with other ways 404s would be done.
+	* Traced each call to getPageFile and put a 404 after for each print method
+	  and made informative 404s about what kind of file is missing.
+	* I have removed a bunch of debugout calls
+
+	* I have implemented the picosite picocall for subpages and wrote the infra-
+	  structure for it. It seems to work, and picosite has been changed quite a
+	  lot so now this branch is being moved into fiddling.
+
+	* While doing subpages I have changed a lot of methods and reduced if statement
+	  by making an empty string that is set if a language is selected.
+	* I removed some redundant functions and took out their calls.
+
