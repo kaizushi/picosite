@@ -12,11 +12,19 @@ include_once("parser.php");
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
+function GetCallingMethodName(){
+	$e = new Exception();
+	$trace = $e->getTrace();
+	//position 0 would be the line that called this function so we ignore it
+	$last_call = $trace[1];
+	print_r($last_call);
+}
+
 function debugout($msg) {
 	if (DEBUGOUT) {
 		echo "picosite DEBUG: " . $msg . "\n";
 		file_put_contents("debug.log", $msg . "\n", FILE_APPEND | LOCK_EX);
-		echo "<br>"
+		echo "<br>";
 	}
 }
 
@@ -163,10 +171,12 @@ function getOldItems() {
 	return $items;
 }
 
-function getPageFile($subpagedir = "none") {
+function getPageFile($subpagedir = "[NONE]") {
 	//This method is a mess, but is another thing for security. This makes
 	//sure that files opened are somewhat hardcoded. It can be a tricky thing
 	//to change.
+	debugout("getPageFile: called from " . GetCallingMethodName());
+	debugout("getPageFile: starting with $subpagedir");
 	$fn = "";
 
 	if (is_null($_GET['q']) || $_GET['q'] === "") $_GET['q'] = 'main';
@@ -190,7 +200,7 @@ function getPageFile($subpagedir = "none") {
 	if (is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = "blogs/" . $_GET['b'] . ".blog.page";
 	}
-
+	
 	if (!is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
 		$fn = "blogs/" . $_GET['b'] . "." . $_GET['l'] . ".trans.blog.page";
 	}
@@ -203,10 +213,11 @@ function getPageFile($subpagedir = "none") {
 		$fn = $subpagedir . "/" . $_GET['sp'] . "." . $_GET['l'] . ".trans.sub.page";
 	}
 
+	debugOut("getPageFile: exiting to return $fn");
 	return $fn;
 }
 
-function parsePrint($text) {
+function printParse($text) {
 	if (is_string($text)) {
 		if (preg_match('/\n/', $text)) {
 			$text = explode('\n', $text);
@@ -216,11 +227,8 @@ function parsePrint($text) {
 	}
 
 	if (is_array($text)) {
-		foreach ($text as $parse) {
-			
-		}
 		foreach ($text as $line) {
-			echo "$line";
+			echo "$line\n";
 		}
 	}
 }
@@ -348,7 +356,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 			echo "<h2>Blog not found in the blogs folder</h2>";
 		}
 		$lines = explode("\n", $file);
-		parsePrint($lines);
+		printParse($lines);
 	}
 }
  
@@ -392,16 +400,16 @@ function printGuide() {
 	} else {
 		$file = getPageFile();
 		$lines = explode("\n", $file);
-		parsePrint($lines);
+		printParse($lines);
 
 		echo '<p><a href="/page.php?q=' . $_GET['q'] . '">Back to Guides</a>';
 	}
 }
 
 function printSubpage($groupname) {
+	debugout("printSubpage: starting with $groupname called from " . GetCallingMethodName());
 	$groupname = limitSysName($groupname); //this stops injection
 	$lang = limitSysName($_GET['l']);
-
 
 	$subpages = [];
 
@@ -412,7 +420,9 @@ function printSubpage($groupname) {
 	}
 
 	if (is_null($_GET['sp'])) {
+		debugout("printSubpage: doing a subpage listing");
 		$subpagesdir = scandir($groupname . '/');
+		debugout("printSubpage: we scanned the directory and found " . count($subpagesdir) . " items.");
 		foreach($subpagesdir as $subpage) {
 			if (endsWith($subpage, ".trans.sub.page")) {
 				if (!is_null($_GET['l'])) {
@@ -431,7 +441,7 @@ function printSubpage($groupname) {
 				}
 			}
 		}
-	 
+		debugout("printSubpage: there are " . count($subpages) . " valid subpages.");
 
 		$titled = pageTitles($subpages);
 	
@@ -455,32 +465,39 @@ function printSubpage($groupname) {
 		}
 		$grouptitle = getPageTitle($file);
 		$lines = explode("\n", $file);
-		parsePrint($lines);
+		printFile($lines);
 		echo '<p><a href="/page.php?q=' . $_GET['q']  . '">Back to ' . $grouptitle . '</a>';
 	}	
 }
 
 function printFile($file) {
+	debugout("printFile called, printing: $file");
 	if (file_exists($file)) {
 		$content = file_get_contents(secureGetFile($file));
 		$lines = explode("\n", $content);
 		
+		debugout("printFile: we have " . count($lines) . " lines to print.");
 		foreach ($lines as $line) {
+			debugout("printFile: processing line: $line");
 			if (substr($line, 0, 4) !== "%%##") {
-				parsePrint($line);
+				debugout("printFile: calling printParse(): $line");
+				printParse($line);
 				echo "\n";
 			} else {
+				debugout("printFile: processing syntax $line");
 				// eventually this will be a function of
 				// similar things but for now it just has
 				// icnlude, which includes a file
 				if (startsWith($line, "%%##incld=")) {
 					$exploded = explode("=", $line);
 					$incl = $exploded[1];
+					debugout("printFile: we are including file: $incl");
 					printFile($incl);
 				}
 				if (startsWith($line, "%%##subpg=")) {
-					$expoded = $explode("=", $line);
+					$exploded = explode("=", $line);
 					$subpage = $exploded[1];
+					debugout("printFile: we are calling subpage: $subpage");
 					printSubpage($subpage);
 				}
 				if (startsWith($line, "%%##guide")) {
