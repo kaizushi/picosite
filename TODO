@@ -5,17 +5,16 @@ The big:
 	This will use the webservers version string, and maybe someone else has
 	code for checking what Linux distro is in use.
 * Turn the guides feature into a subpages feature.
-	This will allow one to include directories of subpages and work much like
-	the guides functionality and be morphed from its code. This will then mean
-	one basically has different content-types and these subpages go on their
-	respective listings not the menus at the top of pages.
+	The subpages system exists and the guides will be morphed into this code.
+	However the guides will have special filenames and I am not quite sure yet
+	how I am going to hack it so it uses printSubpage() to do it. Since the
+	printSubpage() method uses getFileName() it could feed it the guide file
+	name instead of a subpage. Easy way would be IFs.
 * Create a parser so one can declare with a new picosite syntax for using BBCode
 	instead of HTML to write pages. This makes it less of a learning curve.
 	Also one should be able to write a template in BBCode for all the pages.
 
 The small:
 * Make it so one can name to main language of the site
-* No more 404s for missing translations. Say translation not available.
 * Make it so one can make blogs use access time or creation time
 * Check everything actually is optional like I say.
-* Create a setting for the base currency symbol.

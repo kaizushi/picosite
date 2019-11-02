@@ -9,6 +9,8 @@ Th 2nd of November 2019:
 	* Traced each call to getPageFile and put a 404 after for each print method
 	  and made informative 404s about what kind of file is missing.
 	* I have removed a bunch of debugout calls
+	* Now there one can set the currency symbol and this means one can use any
+	  language as long as getprice.php is using it.
 
 	* I have implemented the picosite picocall for subpages and wrote the infra-
 	  structure for it. It seems to work, and picosite has been changed quite a
