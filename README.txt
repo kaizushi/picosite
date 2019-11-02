@@ -76,15 +76,134 @@ what is here are not-existent.
 * Efficieny, this software has some redundant code and almost identical
 	methods. These will be broken up into more methods.
 
-=== Using picocms ===
+=== Introduction ===
+
+= Credits and How it Began =
+
+- Kaizu -
+
+I Kaizu Shibata developed this starting in February 2019 as a simple 
+website that got more complicated. Most development has been done rec-
+ently and it is undergoing a big change. It was a hodgepodge and had
+much redundant code. Now it is becoming more principled and streamlined
+though it now involves more code.
+
+The picosite software is developed to run my deep web hosting buisness.
+It is call Kaizushi's Little Onion Server which runs Hardened Gentoo,
+and uses SELinux. Yet despite the best of mitigations and backend secu-
+rity, my interactive PHP frontends would get owned.
+
+I thought of PHP signing every page on my wiki, but then nobody would
+spend time checking signatures. One night I was looking for inspiration
+in general browsing Volatile Git (git.volatile.bz) and found a guys st-
+atic site generator. I realised I could learn PHP and write a simple
+site to power my business.
+
+At first this site just had the Page feature and was just over 150 lin-
+es of code. I never kept reveisions and just experimented on code and I
+had only known PHP a couple of months. As I added features I had to
+find ways to manage them.
+
+So the site grew and became bloated with some redundant code blocks.
+And then I wanted more than just 'guides' as I plan to write fiction,
+and maybe even have an area for music I love from hooktube. So I wanted
+to do the Subpages feature. I realised when I thought of it that it cou
+ld subsume a lot of features.
+
+I distributed the software to another user who wanted a hack proof
+blog, and he edited it a bit. He sent me his code and I made a diff to
+see what he did. He made a bunch of things optional simply by them ch-
+ecking if files related to the features exist, and using 'return' to
+get out of methods quick. This gave me more ideas to fix the site.
+
+So I got Git and made a local repo and Github. I decided this tool wou-
+ld be good. I make small changes in the experimental branch 'fiddling'
+and push them to 'master' when they work. Big new features and where I
+make a new feature I give it a name. So far we have 'subpage' which is
+done, which was then moved to 'testing' so I could fix it up and get st
+uff I broke making it work.
+
+The result is software you can use to have a secure site with price es-
+imates, a blog to post news about your shop, pages to describe your se-
+rvices, a large amount of organised pages, subpages to have listings of
+guides and all kinds of other content. It is easy to start using and
+get a site up using just some of the features and enable them slowly
+and not waste resources on things you don't need.
+
+You should find I am receptive to ideas about how to improve to the pr-
+oject. I am an avid fan of Ayn Rand and love the ideas of businessmen
+on the dark web. As such if you find yourself using this for its price
+list you will will find I might add more features you suggest. As long
+as they do not go against principle features, the the backward compata-
+bility.
+
+I am also interested in more developers. I am tempted to add a picocode
+which drags in PHP. This could allow for very powerful extensions to the
+system. I am also interested in core changes as long as they maintain
+the backward compatability and read only nature of the site. I would
+love a general code review and optimization. I have no ideas on a good
+way to cache files in memory as it opens a looks through many.
+
+Anyway, that is my project and my dream with it. My next steps in deve-
+lopment are to make it support BBCode and some whole new picocode that
+does markup for in page prices and links to pages and subpages. This is
+the stuff that is easy but will take time. I have found a way by using
+an empty string that is filled with HTTP GET variables, that I can rep-
+lace much code and if statements to shrink the code.
+
+As Cyrus the Great would say: Enjoy the software!
+
+= Licence =
+
+This software is covered by the MIT licence. As such it has no warranty
+and one is free to use the code for any purpose. For more details you
+should see LICENSE which is shipped with the source code.
+
+= Requirements for Setup =
+
+* This software requires a webserver with PHP 7.3 but it may work on ol-
+  der PHP installations. As such it is untested on earlier versions of
+  PHP. It is currently tested on Kaizushi's Little Onion Server but not
+  entirely.
+* It should not require anything but your basic PHP without extensions.
+  This itself is not tested.
+* Things that require extensions are usually optional.
+* It can use a lot of open files if you get a DDOS attack. This may be
+  solved with a global cache of some kind. For now the script has a li-
+  mitation to reduce software complexity.
+* Your site can be read only for the PHP script, but it has no code wh-
+  ich can be used to alter your system in any way. 
 
 = Install the script =
 
-One starts by uploading page.php to a web directory. Then one has to
-create some files for pages. As such the pages feature is the only
-fundamental one. Blogs, guides, even the static menu are all optional
-and one can ignore these features, just by not using their 'special'
-syntax and not creating any pages for them.
+To install picosite at its bare minimum you copy page.php and start re-
+ading. With this you are required to make a main.page for which there
+are directions below. You can make other pages and gradually enable fe-
+atures on the site.
+
+If you copy the whole project completely you may wish to stop them rea-
+ding README.txt, REFERENCE.txt, and even the README.md as these can up-
+date with new features and be used to version you. If you think that is
+hard they can use copy-paste and Google to do it well.
+
+One should be using HTTPS, Tor, I2P, or some other kind of encryption
+for serving the site. Without it despite its read only nature it would
+be vulnerable to man-in-the-middle attacks. It was originally concieved
+for being an Onion service. It very happily runs on many domains at
+once and consistently uses relative paths.
+
+One may wish to move the getprices.php script out of the web directory
+and into their home directory. The path in the file on most SELinux
+systems will have to write into a folder called data in the webdir.
+There are globals in the file to set your base currency and your path
+to the data directory, where it places two flatfiles containing a
+price. It gets the data with JSON, this script uses network services
+but can made highly secure with the right system
+
+One may wish if they do not have advanced hosting and can't use cron
+anyway to delete getprices.php. They could instead upload files to set
+the price manually for their site. One could even have a script with a
+SFTP or FTP and upload the price from another box to basic hosting.
 
 = Set the Site Name and Logo =
 
