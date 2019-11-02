@@ -6,6 +6,7 @@ define("SITENAME", "A Fresh new picosite");
 define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
 define("DEBUGOUT", true);
+define("TRACEOFF", false); 
 define("CURRENCY_SYM", "$");
 
 include_once("parser.php");
@@ -13,6 +14,7 @@ include_once("parser.php");
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
 function GetCallingMethodName(){
+	if (TRACEOFF) return;
 	$e = new Exception();
 	$trace = $e->getTrace();
 	//position 0 would be the line that called this function so we ignore it
@@ -45,23 +47,6 @@ function endsWith($instring, $substring) {
 	return $length === 0 || (substr($instring, -$length) === $substring);
 }
 
-function secureGetFile($filename) {
-	$fileparts = explode("/", $filename);
-	foreach ($fileparts as $filepart) {
-		$filename = $filepart;
-	}
-
-	if ($fileparts[0] === "guides") {
-		$file = "guides/" . limitSysName($filename);
-	} else if ($fileparts[0] === "blogs") {
-		$file = "blogs/" . limitSysName($filename);
-	} else {
-		$file = limitSysName($filename);
-	}
-
-	return $file;
-}
-
 function nodestrip($nodes) {
 	$stripped = [];
 	foreach ($nodes as $key => $node) {
@@ -74,49 +59,93 @@ function nodestrip($nodes) {
 	return $stripped;
 }
 
-function pageTitles($files) {
-	$titledRefs = [];
-
-	$hastitle=false;
+function pageTitles($files, $subpage = "[NONE]") {
+	debugout("pageTitles: method called with subpage $subpage");
 	
-	if (!is_null($_GET['l'])) {
-		$newFiles = [];
-		foreach ($files as $file) {
-			if (endsWith($file, ".trans.guide.page")) {
-				array_push($newFiles, $file);
-			} else {
-				if (endsWith($file, ".blog.page") || endsWith($file,".guide.page")) {
-					$parts = explode('.', $file);
-					$title = $parts[0];
-					if (endsWith($file,".guide.php")) $fn = "guides/" . $title . "." . $_GET['l'] . '.guide.php';
-					array_push($newFiles, $file);
-				} else {
-					$parts = explode('.', $file);
-					$title = $parts[0];
-					$fn = $title . "." . $_GET['l'] . '.trans.page';
-					array_push($newFiles, $fn);
-				}
-			}
+	$newFiles = [];
+	foreach ($files as $file) {
+		$paths = explode("/", $file);
+		debugout("pageTitles: file $file has " . count($paths) . " paths");
+		if (count($paths) == 2) {
+			$file = $paths[1];
+		};
+
+		debugout("pageTitles: doing $file in list");
+		$lang = NULL;
+		$inslang = "";
+		$fn = NULL;
+
+		$parts = explode('.', $file);
+		$title = $parts[0];
+		debugout("pageTitles: file has title: $title");
+		debugout("pageTitles: file $file has " . count($parts) . " parts");
+		if (((endsWith($file, ".blog.page") || endsWith($file,".guide.page") || endsWith($file,".sub.page"))
+		      && count($parts)) == 3) {
+			$type = $parts[1];
+			debugout("pageTitles: special type (title: $title) (type: $type)");
+		} elseif (endsWith($file, ".page") && count($parts) == 2) {
+			$type = "page";
 		}
-		$files = $newFiles;
+		debugout("pageTitles: file has type: $type");		
+
+		if (($subpage === "[NONE]") && $type === "sub") {
+			debugout("pageTitles: no subpage but sub page type detected");
+			continue;
+		}
+
+		if (!is_null($_GET['l'])) { 
+			$lang = $parts[2];
+			$inslang = "." . $lang . ".trans";
+		}
+			
+		if ($type === "blog") $fn = "blogs/" . $title . $inslang . ".blog.page";
+		if ($type === "guide") $fn = "guides/" . $title . $inslang . ".guide.page";
+		if ($type === "sub") $fn = $subpage . "/" . $title . $inslang .  ".sub.page";
+		
+		if ((($type === "page") && endsWith($file, ".page")))
+			$fn = $title . $inslang . ".page";
+		
+		if (!is_null($fn)) { 
+			debugout("pageTitles: NOT NULL for $fn");
+			array_push($newFiles, $fn);
+		}
 	}
 
+	$files = $newFiles;
+	$titledRefs = [];
+
+	debugout("pageTitles: searching for titles through " . count($files) . " files");
 	foreach ($files as $file) {
+		debugout("pageTitles: iterating files value: $file");
+		
+		$hastitle = false;
+
 		$filesplit = explode(".", $file);
 		$node = $filesplit[0];
 		$nodesplit = explode("/", $node);
+
 		if (count($nodesplit) == 2) {
 			$node = $nodesplit[1];
 		}
-		$page = file_get_contents(secureGetFile($file));
+		debugout("pageTitles: iteration broken down into $node");
+
+		if (!file_exists($file)) {
+			$titledRefs[$node] = "Missing File";
+			continue;
+		}
+
+		$page = file_get_contents($file);
 		$lines = explode("\n", $page);
 
-		$hastitle = false;
+		debugout("pageTitles: page has been exploded into " . count($lines) . " array slots");
 
 		foreach ($lines as $line) {
+			debugout("pageTitles: iterating file lines: $line");
+
 			if (startsWith($line, "%%##title=")) {
 				$sides = explode("=", $line);
 				$title = $sides[1];
+				debugout("pageTitles: detected title $title");
 				$titledRefs[$node] = $title;
 				$hastitle = true;
 			}
@@ -171,6 +200,27 @@ function getOldItems() {
 	return $items;
 }
 
+function getSubpageName($file) {
+	$subname = "[NOFILE]";
+
+	if (file_exists($file)) {
+		$subname = "[NOSUB]";
+		$content = file_get_contents($file);
+		$lines = explode("\n", $content);
+
+		foreach ($lines as $line) {
+			if (startsWith($line, "%%##subpg=")) {
+				$exploded = explode("=", $line);
+				$subname = $exploded[1];
+				debugout("getSubpageName: we have found subpage $subname picocall in $file");
+				break;
+			}
+		}
+	} 
+	
+	return $subname;
+}
+
 function getPageFile($subpagedir = "[NONE]") {
 	//This method is a mess, but is another thing for security. This makes
 	//sure that files opened are somewhat hardcoded. It can be a tricky thing
@@ -178,46 +228,45 @@ function getPageFile($subpagedir = "[NONE]") {
 	debugout("getPageFile: called from " . GetCallingMethodName());
 	debugout("getPageFile: starting with $subpagedir");
 	$fn = "";
+	$inslang = "";
 
 	if (is_null($_GET['q']) || $_GET['q'] === "") $_GET['q'] = 'main';
 
-	if (is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
-		$fn = $_GET["q"] . ".page";
+	if (!is_null($_GET['l'])) $inslang = "." . $_GET['l'] . ".trans";
+
+	if (is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) 
+		$fn = $_GET["q"] . $inslang . ".page";
+
+	if (!is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
+		$fn = "guides/" . $_GET['g'] . $inslang . ".guide.page";
 	}
 
-	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
-		$fn = $_GET["q"] . "." . $_GET["l"] . ".trans.page";
-	}
-
-	if (is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
-		$fn = "guides/" . $_GET['g'] . ".guide.page";
-	}
-
-	if (!is_null($_GET['l']) && !is_null($_GET['g']) && is_null($_GET['b']) && is_null($_GET['sp'])) {
-		$fn = "guides/" . $_GET['g'] . "." . $_GET['l'] . ".trans.guide.page";
-	}
-
-	if (is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
-		$fn = "blogs/" . $_GET['b'] . ".blog.page";
+	if (is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
+		$fn = "blogs/" . $_GET['b'] . $inslang . ".blog.page";
 	}
 	
-	if (!is_null($_GET['l']) && is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
-		$fn = "blogs/" . $_GET['b'] . "." . $_GET['l'] . ".trans.blog.page";
-	}
-
-	if (!is_null($_GET['l']) && !is_null($_GET['g']) && !is_null($_GET['b']) && is_null($_GET['sp'])) {
+	if (is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && !is_null($_GET['sp'])) {
+		if ($subpagedir === "[NONE]") {
+			$subname = getSubpageName($_GET['q'] . ".page");
+			if ($subname === "[NOFILE]") {
+				$fn = $_GET['q'] . ".page"; //if this looks odd it does a 404	
+			} else if ($subname === "[NOSUB]") {
+				return $subname;
+			} else {
+				$subpagedir = $subname;
+			}
+		}
+		
 		$fn = $subpagedir . "/" . $_GET['sp'] . ".sub.page";
 	}
 	
-	if (!is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && !is_null($_GET['sp'])) {
-		$fn = $subpagedir . "/" . $_GET['sp'] . "." . $_GET['l'] . ".trans.sub.page";
-	}
-
 	debugOut("getPageFile: exiting to return $fn");
 	return $fn;
 }
 
 function printParse($text) {
+	GetCallingMethodName();
+
 	if (is_string($text)) {
 		if (preg_match('/\n/', $text)) {
 			$text = explode('\n', $text);
@@ -407,7 +456,7 @@ function printGuide() {
 }
 
 function printSubpage($groupname) {
-	debugout("printSubpage: starting with $groupname called from " . GetCallingMethodName());
+	debugout("printSubpage: starting with subname \"$groupname\" called from " . GetCallingMethodName());
 	$groupname = limitSysName($groupname); //this stops injection
 	$lang = limitSysName($_GET['l']);
 
@@ -423,49 +472,46 @@ function printSubpage($groupname) {
 		debugout("printSubpage: doing a subpage listing");
 		$subpagesdir = scandir($groupname . '/');
 		debugout("printSubpage: we scanned the directory and found " . count($subpagesdir) . " items.");
-		foreach($subpagesdir as $subpage) {
-			if (endsWith($subpage, ".trans.sub.page")) {
-				if (!is_null($_GET['l'])) {
-					$exploded = explode('.', $subpage);
-					$thissub = $exploded[1];
-					$thislang = $exploded[2];
-					if ($thislang === $_GET['l']) {
-						array_push($subpages, $groupname . $thislang . '/' . $thissub);
-					}
-				}
-			} else if (endsWith($guide, ".sub.page")) {
-				if (is_null($_GET['l'])) {
-					$exploded = explode('.', $subpage);
-					$thissub = $exploded[1];
-					array_push($subpages, $groupname . '/' . $thissub);
-				}
-			}
+
+		$inslang = "";
+		$getlang = "";
+
+		if (!is_null($_GET['l'])) {
+			$inslang = $_GET['l'] . ".trans";
+			$getlang = "&l=" . $_GET['l'];
 		}
+
+		foreach($subpagesdir as $subpage) {
+			if ($subpage === ".." || $subpage == ".") continue;
+			debugout("printSubpage: processing $subpage");
+
+			$exploded = explode('.', $subpage);
+			$thissub = $exploded[0];
+			array_push($subpages, $groupname . '/' . $thissub . $inslang . ".sub.page");
+		}
+
 		debugout("printSubpage: there are " . count($subpages) . " valid subpages.");
 
-		$titled = pageTitles($subpages);
+		$titled = pageTitles($subpages, $groupname);
+		debugout("printSubpage: we have titled " . count($subpages) . " valid titled pages.");
 	
 		echo "<ul>";
 		foreach($titled as $node => $title) {
-	 		if (is_null($_GET['l'])) {
-				echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node .  '">' . $title . "</a></li>";
-			} else {
-				echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . '&l=' . $lang . '">' . $title . "</a></li>";
-			}
-			echo "\n";
+			echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . $getlang .  '">' . $title . "</a></li>\n";
 		}
 		echo "</ul>";
 	} else {
 		$file = getPageFile($groupname);
 		debugout("printSubpages: we tried getPagefile($groupname) and got this: $file");
+
 		if (!file_exists($file)) {
 			http_response_code(404);
 			print "<h2>Subpage called but file does not exist</h2>";
 			return;
 		}
+
 		$grouptitle = getPageTitle($file);
-		$lines = explode("\n", $file);
-		printFile($lines);
+		printFile($file);
 		echo '<p><a href="/page.php?q=' . $_GET['q']  . '">Back to ' . $grouptitle . '</a>';
 	}	
 }
@@ -473,7 +519,8 @@ function printSubpage($groupname) {
 function printFile($file) {
 	debugout("printFile called, printing: $file");
 	if (file_exists($file)) {
-		$content = file_get_contents(secureGetFile($file));
+		GetCallingMethodName();
+		$content = file_get_contents($file);
 		$lines = explode("\n", $content);
 		
 		debugout("printFile: we have " . count($lines) . " lines to print.");
@@ -599,7 +646,7 @@ function getPageTitle($pagefile) {
 	if (!file_exists($pagefile)) {
 		$title = "Page not found";
 	} else {
-		$page = file_get_contents(secureGetFile($pagefile));
+		$page = file_get_contents($pagefile);
 		$lines = explode("\n", $page);
 
 		foreach ($lines as $line) {
