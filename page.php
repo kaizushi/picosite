@@ -7,13 +7,15 @@ define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
 define("DEBUGOUT", false);
 define("TRACEOFF", true); 
+define("ALWAYSTRACE", false);
 define("CURRENCY_SYM", "$");
 
+include_once("config.php");
 include_once("parser.php");
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
-function GetCallingMethodName(){
+function debugMethodName(){
 	if (TRACEOFF) return;
 	$e = new Exception();
 	$trace = $e->getTrace();
@@ -22,7 +24,7 @@ function GetCallingMethodName(){
 	print_r($last_call);
 }
 
-function debugout($msg) {
+function printDebug($msg) {
 	if (DEBUGOUT) {
 		echo "picosite DEBUG: " . $msg . "\n";
 		file_put_contents("debug.log", $msg . "\n", FILE_APPEND | LOCK_EX);
@@ -30,24 +32,24 @@ function debugout($msg) {
 	}
 }
 
-function limitSysName($string) {
+function transSecureSysName($string) {
 	//dumb method name
 	$newstring = preg_replace("/[^A-Za-z0-9.-]/","",$string);
 	return $newstring;
 }
 
 
-function startsWith($instring, $substring) {
+function transStart($instring, $substring) {
 	$length = strlen($substring);
 	return (substr($instring, 0, $length) === $substring);
 }
 
-function endsWith($instring, $substring) {
+function transEnd($instring, $substring) {
 	$length = strlen($substring);
 	return $length === 0 || (substr($instring, -$length) === $substring);
 }
 
-function nodestrip($nodes) {
+function transStripNode($nodes) {
 	$stripped = [];
 	foreach ($nodes as $key => $node) {
 		$nodesplit = explode('/', $node);
@@ -59,37 +61,37 @@ function nodestrip($nodes) {
 	return $stripped;
 }
 
-function pageTitles($files, $subpage = "[NONE]") {
-	debugout("pageTitles: method called with subpage $subpage");
+function getPageTitles($files, $subpage = "[NONE]") {
+	printDebug("getPageTitles: method called with subpage $subpage");
 	
 	$newFiles = [];
 	foreach ($files as $file) {
 		$paths = explode("/", $file);
-		debugout("pageTitles: file $file has " . count($paths) . " paths");
+		printDebug("getPageTitles: file $file has " . count($paths) . " paths");
 		if (count($paths) == 2) {
 			$file = $paths[1];
 		};
 
-		debugout("pageTitles: doing $file in list");
+		printDebug("getPageTitles: doing $file in list");
 		$lang = NULL;
 		$inslang = "";
 		$fn = NULL;
 
 		$parts = explode('.', $file);
 		$title = $parts[0];
-		debugout("pageTitles: file has title: $title");
-		debugout("pageTitles: file $file has " . count($parts) . " parts");
-		if (((endsWith($file, ".blog.page") || endsWith($file,".guide.page") || endsWith($file,".sub.page"))
+		printDebug("getPageTitles: file has title: $title");
+		printDebug("getPageTitles: file $file has " . count($parts) . " parts");
+		if (((transEnd($file, ".blog.page") || transEnd($file,".guide.page") || transEnd($file,".sub.page"))
 		      && count($parts)) == 3) {
 			$type = $parts[1];
-			debugout("pageTitles: special type (title: $title) (type: $type)");
-		} elseif (endsWith($file, ".page") && count($parts) == 2) {
+			printDebug("getPageTitles: special type (title: $title) (type: $type)");
+		} elseif (transEnd($file, ".page") && count($parts) == 2) {
 			$type = "page";
 		}
-		debugout("pageTitles: file has type: $type");		
+		printDebug("getPageTitles: file has type: $type");		
 
 		if (($subpage === "[NONE]") && $type === "sub") {
-			debugout("pageTitles: no subpage but sub page type detected");
+			printDebug("getPageTitles: no subpage but sub page type detected");
 			continue;
 		}
 
@@ -102,11 +104,11 @@ function pageTitles($files, $subpage = "[NONE]") {
 		if ($type === "guide") $fn = "guides/" . $title . $inslang . ".guide.page";
 		if ($type === "sub") $fn = $subpage . "/" . $title . $inslang .  ".sub.page";
 		
-		if ((($type === "page") && endsWith($file, ".page")))
+		if ((($type === "page") && transEnd($file, ".page")))
 			$fn = $title . $inslang . ".page";
 		
 		if (!is_null($fn)) { 
-			debugout("pageTitles: NOT NULL for $fn");
+			printDebug("getPageTitles: NOT NULL for $fn");
 			array_push($newFiles, $fn);
 		}
 	}
@@ -114,9 +116,9 @@ function pageTitles($files, $subpage = "[NONE]") {
 	$files = $newFiles;
 	$titledRefs = [];
 
-	debugout("pageTitles: searching for titles through " . count($files) . " files");
+	printDebug("getPageTitles: searching for titles through " . count($files) . " files");
 	foreach ($files as $file) {
-		debugout("pageTitles: iterating files value: $file");
+		printDebug("getPageTitles: iterating files value: $file");
 		
 		$hastitle = false;
 
@@ -127,7 +129,7 @@ function pageTitles($files, $subpage = "[NONE]") {
 		if (count($nodesplit) == 2) {
 			$node = $nodesplit[1];
 		}
-		debugout("pageTitles: iteration broken down into $node");
+		printDebug("getPageTitles: iteration broken down into $node");
 
 		if (!file_exists($file)) {
 			$titledRefs[$node] = "Missing File";
@@ -137,15 +139,15 @@ function pageTitles($files, $subpage = "[NONE]") {
 		$page = file_get_contents($file);
 		$lines = explode("\n", $page);
 
-		debugout("pageTitles: page has been exploded into " . count($lines) . " array slots");
+		printDebug("getPageTitles: page has been exploded into " . count($lines) . " array slots");
 
 		foreach ($lines as $line) {
-			debugout("pageTitles: iterating file lines: $line");
+			printDebug("getPageTitles: iterating file lines: $line");
 
-			if (startsWith($line, "%%##title=")) {
+			if (transStart($line, "%%##title=")) {
 				$sides = explode("=", $line);
 				$title = $sides[1];
-				debugout("pageTitles: detected title $title");
+				printDebug("getPageTitles: detected title $title");
 				$titledRefs[$node] = $title;
 				$hastitle = true;
 			}
@@ -157,15 +159,15 @@ function pageTitles($files, $subpage = "[NONE]") {
 	return $titledRefs;
 }
 
-function getpriceBTC() {
+function getPriceBitcoin() {
 	return (float) file_get_contents("data/btc-price");
 }
 
-function getpriceXMR() {
+function getPriceMonero() {
 	return (float) file_get_contents("data/xmr-price");
 }
 
-function getItems() {
+function getItemList() {
 	$items = [];
 	$data = file_get_contents("itemlist.txt");
 	$lines = explode("\n", $data);
@@ -179,7 +181,7 @@ function getItems() {
 	return $items;
 }
 
-function getOldItems() {
+function getItemListOld() {
 	$items = [];
 
 	if (file_exists("itemlist-old.txt") === false) {
@@ -200,7 +202,7 @@ function getOldItems() {
 	return $items;
 }
 
-function getSubpageName($file) {
+function getPageSubpage($file) {
 	$subname = "[NOFILE]";
 
 	if (file_exists($file)) {
@@ -209,10 +211,10 @@ function getSubpageName($file) {
 		$lines = explode("\n", $content);
 
 		foreach ($lines as $line) {
-			if (startsWith($line, "%%##subpg=")) {
+			if (transStart($line, "%%##subpg=")) {
 				$exploded = explode("=", $line);
 				$subname = $exploded[1];
-				debugout("getSubpageName: we have found subpage $subname picocall in $file");
+				printDebug("getPageSubpage: we have found subpage $subname picocall in $file");
 				break;
 			}
 		}
@@ -222,11 +224,8 @@ function getSubpageName($file) {
 }
 
 function getPageFile($subpagedir = "[NONE]") {
-	//This method is a mess, but is another thing for security. This makes
-	//sure that files opened are somewhat hardcoded. It can be a tricky thing
-	//to change.
-	debugout("getPageFile: called from " . GetCallingMethodName());
-	debugout("getPageFile: starting with $subpagedir");
+	printDebug("getPageFile: called from " . debugMethodName());
+	printDebug("getPageFile: starting with $subpagedir");
 	$fn = "";
 	$inslang = "";
 
@@ -247,7 +246,7 @@ function getPageFile($subpagedir = "[NONE]") {
 	
 	if (is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && !is_null($_GET['sp'])) {
 		if ($subpagedir === "[NONE]") {
-			$subname = getSubpageName($_GET['q'] . ".page");
+			$subname = getPageSubpage($_GET['q'] . ".page");
 			if ($subname === "[NOFILE]") {
 				$fn = $_GET['q'] . ".page"; //if this looks odd it does a 404	
 			} else if ($subname === "[NOSUB]") {
@@ -264,8 +263,8 @@ function getPageFile($subpagedir = "[NONE]") {
 	return $fn;
 }
 
-function printParse($text) {
-	GetCallingMethodName();
+function printCoreOut($text) {
+	debugMethodName();
 
 	if (is_string($text)) {
 		if (preg_match('/\n/', $text)) {
@@ -289,8 +288,8 @@ function printPrice($itemname, $usdprice, $oldprice) {
 		$oldmode = false;
 	}
 
-	$btc = getpriceBTC();
-	$xmr = getpriceXMR();
+	$btc = getPriceBitcoin();
+	$xmr = getPriceMonero();
 
 	$btcp = number_format($usdprice / $btc, 4);
 	$xmrp = number_format($usdprice / $xmr, 3);
@@ -304,15 +303,15 @@ function printPrice($itemname, $usdprice, $oldprice) {
 	}
 }
 
-function printallPrices() {
+function printItemListing() {
 	$oldmode = true;
 	if (!file_exists("itemlist.txt")) {
 		http_response_code(404);
 		print "<h2>Price list does not exist.</h2>";
 		return;
 	}
-	$items = getItems();
-	$olditems = getOldItems();
+	$items = getItemList();
+	$olditems = getItemListOld();
 	$timebtc = filemtime("data/btc-price");
 	$timexmr = filectime("data/xmr-price");
 
@@ -321,8 +320,8 @@ function printallPrices() {
 		unset($olditems["NOFILE"]);
 	}
 
-	echo "<p><strong>BTC " . date("G:i:s d/m/Y", $timebtc) . ": $" . getpriceBTC() . "<br>\n";
-	echo "XMR " . date("G:i:s d/m/Y", $timexmr) . ": $" . getpriceXMR() . "</strong>\n";
+	echo "<p><strong>BTC " . date("G:i:s d/m/Y", $timebtc) . ": $" . getPriceBitcoin() . "<br>\n";
+	echo "XMR " . date("G:i:s d/m/Y", $timexmr) . ": $" . getPriceMonero() . "</strong>\n";
 	echo "<table>\n";
 
 	if ($oldmode) {
@@ -359,7 +358,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		$x = 0;
 
 		foreach ($blogdir as $blog) {
-			if (endsWith($blog, ".blog.page")) {
+			if (transEnd($blog, ".blog.page")) {
 				$fileparts = explode('.', $blog);
 				$name = $fileparts[0];
 				$ctime = filemtime('blogs/' . $name . ".blog.page");
@@ -369,8 +368,8 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		}
 
 		krsort($blogs);
-		$titled = pageTitles($blogs);
-		$blogs = nodestrip($blogs);
+		$titled = getPageTitles($blogs);
+		$blogs = transStripNode($blogs);
 
 		
 		echo '<table>';
@@ -411,7 +410,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		}
 
 		$lines = explode("\n", $file);
-		printParse($lines);
+		printCoreOut($lines);
 	}
 }
  
@@ -425,7 +424,7 @@ function printGuide() {
 		$guidesdir = scandir("guides/");
 		$guides = [];
 		foreach ($guidesdir as $guide) {
-			if (endsWith($guide, ".trans.guide.page")) {
+			if (transEnd($guide, ".trans.guide.page")) {
 				if (!is_null($_GET['l'])) {
 					$exploded = explode('.', $guide);
 					$guidelang = $exploded[1];
@@ -433,14 +432,14 @@ function printGuide() {
 						array_push($guides, 'guides/' . $guide);
 					}
 				}
-			} else if (endsWith($guide, ".guide.page")) {
+			} else if (transEnd($guide, ".guide.page")) {
 				if (is_null($_GET['l'])) {
 					array_push($guides, 'guides/' . $guide);
 				}
 			}
 		}
 
-		$titled = pageTitles($guides);
+		$titled = getPageTitles($guides);
 
 		foreach ($titled as $node => $title) {
 			if (is_null($_GET['l'])) {
@@ -455,16 +454,16 @@ function printGuide() {
 	} else {
 		$file = getPageFile();
 		$lines = explode("\n", $file);
-		printParse($lines);
+		printCoreOut($lines);
 
 		echo '<p><a href="/page.php?q=' . $_GET['q'] . '">Back to Guides</a>';
 	}
 }
 
 function printSubpage($groupname) {
-	debugout("printSubpage: starting with subname \"$groupname\" called from " . GetCallingMethodName());
-	$groupname = limitSysName($groupname); //this stops injection
-	$lang = limitSysName($_GET['l']);
+	printDebug("printSubpage: starting with subname \"$groupname\" called from " . debugMethodName());
+	$groupname = transSecureSysName($groupname); //this stops injection
+	$lang = transSecureSysName($_GET['l']);
 
 	$subpages = [];
 
@@ -475,9 +474,9 @@ function printSubpage($groupname) {
 	}
 
 	if (is_null($_GET['sp'])) {
-		debugout("printSubpage: doing a subpage listing");
+		printDebug("printSubpage: doing a subpage listing");
 		$subpagesdir = scandir($groupname . '/');
-		debugout("printSubpage: we scanned the directory and found " . count($subpagesdir) . " items.");
+		printDebug("printSubpage: we scanned the directory and found " . count($subpagesdir) . " items.");
 
 		$inslang = "";
 		$getlang = "";
@@ -489,17 +488,17 @@ function printSubpage($groupname) {
 
 		foreach($subpagesdir as $subpage) {
 			if ($subpage === ".." || $subpage == ".") continue;
-			debugout("printSubpage: processing $subpage");
+			printDebug("printSubpage: processing $subpage");
 
 			$exploded = explode('.', $subpage);
 			$thissub = $exploded[0];
 			array_push($subpages, $groupname . '/' . $thissub . $inslang . ".sub.page");
 		}
 
-		debugout("printSubpage: there are " . count($subpages) . " valid subpages.");
+		printDebug("printSubpage: there are " . count($subpages) . " valid subpages.");
 
-		$titled = pageTitles($subpages, $groupname);
-		debugout("printSubpage: we have titled " . count($subpages) . " valid titled pages.");
+		$titled = getPageTitles($subpages, $groupname);
+		printDebug("printSubpage: we have titled " . count($subpages) . " valid titled pages.");
 	
 		echo "<ul>";
 		foreach($titled as $node => $title) {
@@ -508,7 +507,7 @@ function printSubpage($groupname) {
 		echo "</ul>";
 	} else {
 		$file = getPageFile($groupname);
-		debugout("printSubpages: we tried getPagefile($groupname) and got this: $file");
+		printDebug("printSubpages: we tried getPagefile($groupname) and got this: $file");
 
 		if (!file_exists($file)) {
 			http_response_code(404);
@@ -523,45 +522,45 @@ function printSubpage($groupname) {
 }
 
 function printFile($file) {
-	debugout("printFile called, printing: $file");
+	printDebug("printFile called, printing: $file");
 	if (file_exists($file)) {
-		GetCallingMethodName();
+		debugMethodName();
 		$content = file_get_contents($file);
 		$lines = explode("\n", $content);
 		
-		debugout("printFile: we have " . count($lines) . " lines to print.");
+		printDebug("printFile: we have " . count($lines) . " lines to print.");
 		foreach ($lines as $line) {
-			debugout("printFile: processing line: $line");
+			printDebug("printFile: processing line: $line");
 			if (substr($line, 0, 4) !== "%%##") {
-				debugout("printFile: calling printParse(): $line");
-				printParse($line);
+				printDebug("printFile: calling printCoreOut(): $line");
+				printCoreOut($line);
 				echo "\n";
 			} else {
-				debugout("printFile: processing syntax $line");
+				printDebug("printFile: processing syntax $line");
 				// eventually this will be a function of
 				// similar things but for now it just has
 				// icnlude, which includes a file
-				if (startsWith($line, "%%##incld=")) {
+				if (transStart($line, "%%##incld=")) {
 					$exploded = explode("=", $line);
 					$incl = $exploded[1];
-					debugout("printFile: we are including file: $incl");
+					printDebug("printFile: we are including file: $incl");
 					printFile($incl);
 				}
-				if (startsWith($line, "%%##subpg=")) {
+				if (transStart($line, "%%##subpg=")) {
 					$exploded = explode("=", $line);
 					$subpage = $exploded[1];
-					debugout("printFile: we are calling subpage: $subpage");
+					printDebug("printFile: we are calling subpage: $subpage");
 					printSubpage($subpage);
 				}
-				if (startsWith($line, "%%##guide")) {
+				if (transStart($line, "%%##guide")) {
 					printGuide();
 				}
-				if (startsWith($line, "%%##blogs")) {
+				if (transStart($line, "%%##blogs")) {
 					printBlog();
 				}
-				if (startsWith($line, "%%##price")) {
-					if (startsWith($line, "%%##price=all")) {
-						printallPrices();
+				if (transStart($line, "%%##price")) {
+					if (transStart($line, "%%##price=all")) {
+						printItemListing();
 					}
 				}
 						
@@ -573,22 +572,22 @@ function printFile($file) {
 	}
 }
 
-function pageBody() {
+function printPageBody() {
 	$pagefile = getPageFile();
 	printFile($pagefile);
 }
 
-function pageLinks() {
+function printLinkTop() {
 	$files = scandir(".");
 	$relevant = array();
 	$links = array();
 	foreach ($files as $file) {
-		if (endsWith($file, ".page")) {
+		if (transEnd($file, ".page")) {
 			array_push($relevant, $file);
 		}
 	}
 
-	$links = pageTitles($relevant);
+	$links = getPageTitles($relevant);
 
 	$ordered = array();
 
@@ -627,7 +626,7 @@ function pageLinks() {
 	}
 }
 
-function langLinks() {
+function printLinksLangs() {
 	$config = file_get_contents("languages.txt");
 	$relations = explode("\n", $config);
 	$langs = [];
@@ -666,14 +665,14 @@ function getPageTitle($pagefile) {
 	return $title;
 }
 
-function pageTitle() {
+function printTitle() {
 	$pagefile = getPageFile();
 	$pagetitle = getPageTitle($pagefile);
-	return $pagetitle;
+	echo $pagetitle;
 }
 ?>
 
-<html><head><title><?php echo pageTitle(); echo " :: "; echo SITENAME; ?></title></head>
+<html><head><title><?php echo printTitle(); echo " :: "; echo SITENAME; ?></title></head>
 <style>
 body {
 	background:url(rainbow_dash.png) fixed no-repeat bottom right;
@@ -692,14 +691,14 @@ table {
 </style>
 <body>
 <center>
-<?php langLinks(); ?>
+<?php printLinksLangs(); ?>
 <img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
-<p><?php pageLinks(); ?><br><br>
+<p><?php printLinkTop(); ?><br><br>
 <?php printBlog(True); ?>
 <br><br><br>
 <table width=750 cellspacing=10 cellpadding=10><tr><td>
-<h1><?php print pageTitle(); ?></h1>
-<?php pageBody(); ?>
+<h1><?php printTitle(); ?></h1>
+<?php printPageBody(); ?>
 </tr></td></table>
 <br><br><br><br><br><br>
 <p><?php echo date("Y") . " Mr Website Creator, server time " . date("G:i:s d/m/y") . " UTC"; ?>
