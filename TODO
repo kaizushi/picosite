@@ -1,6 +1,13 @@
 === Things to change in future edits ===
 
 The big:
+* Turn all the little methods which do transform data between get and print methods
+	so they have uniform names. I think this will be tranFunction where Function
+	is the name of the method.
+* A new kind of picocode which does all existing picocodes. This requires a picocode
+	central point which interprets their basic machine names and does the calls.
+	It will also need a parser which reads old and new picocodes from the site as
+	Pages are printed
 * Make the price list system site wide and accept inserting items from the pricelist.
 	This will require making machine names on the price list. To maintain backward
 	comptability this will 'pricemap.txt' and convert to human readable names
