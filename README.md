@@ -1,23 +1,29 @@
 # picosite
-A secure CMS which only knows how to read files you create using SSH
+## Introduction
+A secure CMS / site generator, which only knows how to read files you create. It has no code that can write to the system. It just checks for files.
 
 In only roughly 500 lines of code!
 
 There are two branches 'master' is stable and so you can clone right away. There is another branch where I iteratively change stuff and see what happens called 'fiddling' because I just fiddle around with stuff.
 
-As such this CMS only reads files with very specific extensions, which prevents it being hacked into reading anything from the disk. This CMS is completely free of anything which can change the system or even the webdir. To use the CMS and add content and make a site with it, one creates text files of HTML with some special picosite syntax. I was new to PHP 7.3 when I wrote it and improvised with the HTML and CSS. It seems to render in all good browsers.
+There are sometimes brances for big feature introductions.
 
-It has many features which can be completely ignored. The only essential feature is displaying pages. In pages picosite has its own 'special syntax' which goes in page files you upload or create. You can do much more though, and it comes with Rainbow Dash, to add a dash of my feminimity as on the Intenet, nobody knows you are a girl.
+## Installation
 
-The feature set of picosite is based around running a dark web business. My mediawiki got owned I'd use for my site, so I wrote my own damn CMS. As such it is good for blogs that announce the status of my dark web server, guides for customers to use the system, an include feature for posting a canary or inserting text in page from another file, and it supports having pages translated into other languages. 
+###Mininum
 
-It has some features good for advertising products with estimates of the cost in crypto-currency presented on a 
+Copy page.php to the remote server and create `main.page` and other page files. You can use picocodes to create your site. Use `REFERENCE.txt` (incomplete) to find a reference of picocodes.
 
-There is more info in README.txt on how to use this CMS, I will one day convert README.txt into markdown and you will see it here. This documentation so far has not been tested on other humans.
+###Standard
+
+Copy everything to your remote server for hosting the website. Then move your getprices.php and secure the site, where you will want to make it so the webserver can't serve up `.page` files on the site. You might also want to delete README.txt and REFERENCE.txt to stop versioning. Read README.txt on your computer or preserve it somehow to learn how to configure picosite.
+
+## Author Bio
 
 Who is Kaizushi?
 
-I a woman who has escaped from the hell on Earth that is Arabia. I live in a nice secular society now, and I live for Agorism. I run Kaizushi's Little Onion Server which I consider to be free of any jurisdiction.
+I a woman who has escaped from the hell on Earth that is Arabia. I live in a nice secular society now, and I live for Agorism. I run Kaizushi's Little Onion Server which I consider to be free of any jurisdiction. It is hosting, shell accounts, a communication service, and more.
 
 You can find me through the Tor network with this address, and see picosite in action...
-http://kaizushigdv5mrnz.onion/
+http://kaizushigdv5mrnz.onion/ - picosite
+
