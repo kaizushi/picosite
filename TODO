@@ -1,6 +1,9 @@
 === Things to change in future edits ===
 
 The big:
+* Write unified currency conversion fetch tools and integrated configuration for it
+	and for fetching prices with cron. This will include making the printListing
+	table generator do many currencies. 
 * Turn all the little methods which do transform data between get and print methods
 	so they have uniform names. I think this will be tranFunction where Function
 	is the name of the method.
