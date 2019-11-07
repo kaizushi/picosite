@@ -78,4 +78,6 @@ Get methods:
 
 	Filesystem:
 
-Static 
+Other methods:
+	Misc:
+		* 
