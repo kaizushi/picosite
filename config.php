@@ -2,7 +2,6 @@
 #your settings go here
 
 define("SITENAME", "A Fresh new picosite");
-define("SOFTNAME", "picosite 1.0.0");
 define("SITELOGO", "sitelogo.png");
 define("DEBUGOUT", false);      
 define("TRACEOFF", true);       
