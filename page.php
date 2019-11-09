@@ -62,36 +62,27 @@ function transStripNode($nodes) {
 }
 
 function getPageTitles($files, $subpage = "[NONE]") {
-	printDebug("getPageTitles: method called with subpage $subpage");
-	
 	$newFiles = [];
 	foreach ($files as $file) {
 		$paths = explode("/", $file);
-		printDebug("getPageTitles: file $file has " . count($paths) . " paths");
 		if (count($paths) == 2) {
 			$file = $paths[1];
 		};
 
-		printDebug("getPageTitles: doing $file in list");
 		$lang = NULL;
 		$inslang = "";
 		$fn = NULL;
 
 		$parts = explode('.', $file);
 		$title = $parts[0];
-		printDebug("getPageTitles: file has title: $title");
-		printDebug("getPageTitles: file $file has " . count($parts) . " parts");
 		if (((transEnd($file, ".blog.page") || transEnd($file,".guide.page") || transEnd($file,".sub.page"))
 		      && count($parts)) == 3) {
 			$type = $parts[1];
-			printDebug("getPageTitles: special type (title: $title) (type: $type)");
 		} elseif (transEnd($file, ".page") && count($parts) == 2) {
 			$type = "page";
 		}
-		printDebug("getPageTitles: file has type: $type");		
 
 		if (($subpage === "[NONE]") && $type === "sub") {
-			printDebug("getPageTitles: no subpage but sub page type detected");
 			continue;
 		}
 
@@ -108,7 +99,6 @@ function getPageTitles($files, $subpage = "[NONE]") {
 			$fn = $title . $inslang . ".page";
 		
 		if (!is_null($fn)) { 
-			printDebug("getPageTitles: NOT NULL for $fn");
 			array_push($newFiles, $fn);
 		}
 	}
@@ -116,9 +106,7 @@ function getPageTitles($files, $subpage = "[NONE]") {
 	$files = $newFiles;
 	$titledRefs = [];
 
-	printDebug("getPageTitles: searching for titles through " . count($files) . " files");
 	foreach ($files as $file) {
-		printDebug("getPageTitles: iterating files value: $file");
 		
 		$hastitle = false;
 
@@ -129,7 +117,6 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		if (count($nodesplit) == 2) {
 			$node = $nodesplit[1];
 		}
-		printDebug("getPageTitles: iteration broken down into $node");
 
 		if (!file_exists($file)) {
 			$titledRefs[$node] = "Missing File";
@@ -139,15 +126,11 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		$page = file_get_contents($file);
 		$lines = explode("\n", $page);
 
-		printDebug("getPageTitles: page has been exploded into " . count($lines) . " array slots");
 
 		foreach ($lines as $line) {
-			printDebug("getPageTitles: iterating file lines: $line");
-
 			if (transStart($line, "%%##title=")) {
 				$sides = explode("=", $line);
 				$title = $sides[1];
-				printDebug("getPageTitles: detected title $title");
 				$titledRefs[$node] = $title;
 				$hastitle = true;
 			}
@@ -214,7 +197,6 @@ function getPageSubpage($file) {
 			if (transStart($line, "%%##subpg=")) {
 				$exploded = explode("=", $line);
 				$subname = $exploded[1];
-				printDebug("getPageSubpage: we have found subpage $subname picocall in $file");
 				break;
 			}
 		}
@@ -224,8 +206,6 @@ function getPageSubpage($file) {
 }
 
 function getPageFile($subpagedir = "[NONE]") {
-	printDebug("getPageFile: called from " . debugMethodName());
-	printDebug("getPageFile: starting with $subpagedir");
 	$fn = "";
 	$inslang = "";
 
@@ -259,7 +239,6 @@ function getPageFile($subpagedir = "[NONE]") {
 		$fn = $subpagedir . "/" . $_GET['sp'] . ".sub.page";
 	}
 	
-	debugOut("getPageFile: exiting to return $fn");
 	return $fn;
 }
 
@@ -461,7 +440,6 @@ function printGuide() {
 }
 
 function printSubpage($groupname) {
-	printDebug("printSubpage: starting with subname \"$groupname\" called from " . debugMethodName());
 	$groupname = transSecureSysName($groupname); //this stops injection
 	$lang = transSecureSysName($_GET['l']);
 
@@ -474,9 +452,7 @@ function printSubpage($groupname) {
 	}
 
 	if (is_null($_GET['sp'])) {
-		printDebug("printSubpage: doing a subpage listing");
 		$subpagesdir = scandir($groupname . '/');
-		printDebug("printSubpage: we scanned the directory and found " . count($subpagesdir) . " items.");
 
 		$inslang = "";
 		$getlang = "";
@@ -488,17 +464,13 @@ function printSubpage($groupname) {
 
 		foreach($subpagesdir as $subpage) {
 			if ($subpage === ".." || $subpage == ".") continue;
-			printDebug("printSubpage: processing $subpage");
 
 			$exploded = explode('.', $subpage);
 			$thissub = $exploded[0];
 			array_push($subpages, $groupname . '/' . $thissub . $inslang . ".sub.page");
 		}
 
-		printDebug("printSubpage: there are " . count($subpages) . " valid subpages.");
-
 		$titled = getPageTitles($subpages, $groupname);
-		printDebug("printSubpage: we have titled " . count($subpages) . " valid titled pages.");
 	
 		echo "<ul>";
 		foreach($titled as $node => $title) {
@@ -507,7 +479,6 @@ function printSubpage($groupname) {
 		echo "</ul>";
 	} else {
 		$file = getPageFile($groupname);
-		printDebug("printSubpages: we tried getPagefile($groupname) and got this: $file");
 
 		if (!file_exists($file)) {
 			http_response_code(404);
@@ -522,34 +493,27 @@ function printSubpage($groupname) {
 }
 
 function printFile($file) {
-	printDebug("printFile called, printing: $file");
 	if (file_exists($file)) {
 		debugMethodName();
 		$content = file_get_contents($file);
 		$lines = explode("\n", $content);
 		
-		printDebug("printFile: we have " . count($lines) . " lines to print.");
 		foreach ($lines as $line) {
-			printDebug("printFile: processing line: $line");
 			if (substr($line, 0, 4) !== "%%##") {
-				printDebug("printFile: calling printCoreOut(): $line");
 				printCoreOut($line);
 				echo "\n";
 			} else {
-				printDebug("printFile: processing syntax $line");
 				// eventually this will be a function of
 				// similar things but for now it just has
 				// icnlude, which includes a file
 				if (transStart($line, "%%##incld=")) {
 					$exploded = explode("=", $line);
 					$incl = $exploded[1];
-					printDebug("printFile: we are including file: $incl");
 					printFile($incl);
 				}
 				if (transStart($line, "%%##subpg=")) {
 					$exploded = explode("=", $line);
 					$subpage = $exploded[1];
-					printDebug("printFile: we are calling subpage: $subpage");
 					printSubpage($subpage);
 				}
 				if (transStart($line, "%%##guide")) {
