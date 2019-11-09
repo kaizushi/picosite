@@ -12,6 +12,9 @@ what is here are not-existent.
 
 === Features ===
 
+* Rainbow Dash, your best friend in the corner. Rainbow Dash can display on
+	all pages and this is powerful. We love Rainbow Dash because we are
+	lesbians who love My Little Pony. Girls only!
 * Compatibility, this software is written in a way that the way you configure
 	it one will always have full backward compatability. This is
 	considered at every step of development. There are no depreciated
