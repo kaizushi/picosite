@@ -3,7 +3,7 @@
 // picosite is almost a CMS, its a light way to have a site.
 
 define("SITENAME", "A Fresh new picosite");
-define("SOFTNAME", "picosite 1.1.0");
+define("SOFTNAME", "picosite 1.1.1");
 define("SITELOGO", "sitelogo.png");
 define("DEBUGOUT", false);
 define("TRACEOFF", true); 
