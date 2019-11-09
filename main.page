@@ -3,6 +3,6 @@
 <p>picosite has many features but ultimately only requires a main page.
 <p>You have installed picosite and are now seeing its only page. This page is the main one and it must exist. It is the page that loads at the start of the site.
 <pre>
-%%##incld=README.txt
+%%##incld=LICENCE
 </pre>
 <p>I hope that documentation was useful and you have your picosite running.
