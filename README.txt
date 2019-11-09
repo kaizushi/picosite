@@ -447,7 +447,7 @@ You could create a file called 'poems.page' in your main directory and
 then a folder with it. If your folder was 'poetry' you could use this
 picocode to create its root subpage.
 
-%%##subpg=poetry
+  %%##subpg=poetry
 
 The Page you do this to is a root subpage and it will display a list of
 files you create in our directory. The files in the directory like most
