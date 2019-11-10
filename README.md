@@ -10,11 +10,11 @@ There are sometimes brances for big feature introductions.
 
 ## Installation
 
-###Mininum
+### Mininum
 
 Copy page.php to the remote server and create `main.page` and other page files. You can use picocodes to create your site. Use `REFERENCE.txt` (incomplete) to find a reference of picocodes.
 
-###Standard
+### Standard
 
 Copy everything to your remote server for hosting the website. Then move your getprices.php and secure the site, where you will want to make it so the webserver can't serve up `.page` files on the site. You might also want to delete README.txt and REFERENCE.txt to stop versioning. Read README.txt on your computer or preserve it somehow to learn how to configure picosite.
 
