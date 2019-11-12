@@ -9,6 +9,7 @@ define("DEBUGOUT", false);
 define("TRACEOFF", true); 
 define("ALWAYSTRACE", false);
 define("CURRENCY_SYM", "$");
+define("MAINLANG", "English");
 
 include_once("config.php");
 include_once("parser.php");
@@ -591,6 +592,8 @@ function printLinkTop() {
 }
 
 function printLinksLangs() {
+	if (!file_exists("languages.txt")) return;
+	
 	$config = file_get_contents("languages.txt");
 	$relations = explode("\n", $config);
 	$langs = [];
@@ -656,7 +659,7 @@ table {
 <body>
 <center>
 <?php printLinksLangs(); ?>
-<img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
+<a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
 <p><?php printLinkTop(); ?><br><br>
 <?php printBlog(True); ?>
 <br><br><br>
