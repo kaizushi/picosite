@@ -62,6 +62,12 @@ function transStripNode($nodes) {
 	return $stripped;
 }
 
+function getLinkMain {
+	// This will eventually take you to the home for each lang
+	// this is why it is a method.
+	echo "/";
+}
+
 function getPageTitles($files, $subpage = "[NONE]") {
 	$newFiles = [];
 	foreach ($files as $file) {
@@ -668,6 +674,6 @@ table {
 <?php printPageBody(); ?>
 </tr></td></table>
 <br><br><br><br><br><br>
-<p><?php echo date("Y") . " " . SITEAUTHOR . ", server time " . date("G:i:s d/m/y") . " UTC"; ?>
+<p><?php echo date("Y") . " " . echo SITEAUTHOR . ", server time " . date("G:i:s d/m/y") . " UTC"; ?>
 <p><i>Powered by Kaizu's <a href="https://github.com/kaizushi/picosite"><?php echo SOFTNAME; ?></a>!</i></p>
 </body></html>
