@@ -1,7 +1,7 @@
 The 28th of October 2019:
 	* I have made the source code release not metion Kaizushi's Little Onion Server.
 	* I have made it so picosite only displays old prices if a file for them exists.
-Th 2nd of November 2019:
+The 2nd of November 2019:
 	* Created a branch for working on the big feature subpage.
 	* I have added a subpage feature but not tested it.
 	* Subpage feature required a change to the 404 system, also the 404 page in a
@@ -21,3 +21,9 @@ Th 2nd of November 2019:
 	  by making an empty string that is set if a language is selected.
 	* I removed some redundant functions and took out their calls.
 	* Made it obvious where one sets the base currency in getprices.php with a global.
+The 18th of November 2019:
+	* Tested so features are not active without picocodes enabling them.
+	* One can set the primary language as a config
+	* One can now click on the site logo to go back to the main page and this
+	  generates the path, and if an alternate language is passed then it
+	  makes a link including it.
