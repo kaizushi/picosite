@@ -62,10 +62,12 @@ function transStripNode($nodes) {
 	return $stripped;
 }
 
-function getLinkMain {
-	// This will eventually take you to the home for each lang
-	// this is why it is a method.
-	echo "/";
+function getLinkMain() {
+	// this method makes a 'back to main page' link
+	// and preserves the selected language
+	$link = "/page.php";
+
+	if (isset($_GET['l'])) $link = $link + "?l=" . $_GET['l'];
 }
 
 function getPageTitles($files, $subpage = "[NONE]") {
