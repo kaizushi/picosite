@@ -4,7 +4,9 @@
 
 define("SITENAME", "A Fresh new picosite");
 define("SOFTNAME", "picosite 1.1.1");
+define("SITEAUTHOR", "A picosite user");
 define("SITELOGO", "sitelogo.png");
+
 define("DEBUGOUT", false);
 define("TRACEOFF", true); 
 define("ALWAYSTRACE", false);
@@ -676,6 +678,6 @@ table {
 <?php printPageBody(); ?>
 </tr></td></table>
 <br><br><br><br><br><br>
-<p><?php echo date("Y") . " " . echo SITEAUTHOR . ", server time " . date("G:i:s d/m/y") . " UTC"; ?>
+<p><?php echo date("Y") . " "; echo SITEAUTHOR; echo ", server time " . date("G:i:s d/m/y") . " UTC"; ?>
 <p><i>Powered by Kaizu's <a href="https://github.com/kaizushi/picosite"><?php echo SOFTNAME; ?></a>!</i></p>
 </body></html>
