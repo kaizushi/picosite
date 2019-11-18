@@ -70,6 +70,8 @@ function getLinkMain() {
 	$link = "/page.php";
 
 	if (isset($_GET['l'])) $link = $link + "?l=" . $_GET['l'];
+
+	return $link;
 }
 
 function getPageTitles($files, $subpage = "[NONE]") {
