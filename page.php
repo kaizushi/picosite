@@ -647,6 +647,12 @@ function printTitle() {
 	$pagetitle = getPageTitle($pagefile);
 	echo $pagetitle;
 }
+
+if (file_exists("template.php")) {
+	include("template.php");
+	exit();
+}
+
 ?>
 
 <html><head><title><?php echo printTitle(); echo " :: "; echo SITENAME; ?></title></head>
