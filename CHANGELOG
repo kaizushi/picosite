@@ -27,3 +27,7 @@ The 18th of November 2019:
 	* One can now click on the site logo to go back to the main page and this
 	  generates the path, and if an alternate language is passed then it
 	  makes a link including it.
+The 19th of November 2019:
+	* We have added template.php and changed page.php, so that if the template
+	  exists, the inbuilt template is disabled. Keep in mind the promise and
+	  principle that page.php works solo.
