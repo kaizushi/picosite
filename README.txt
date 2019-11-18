@@ -480,33 +480,18 @@ these in their menulayout.txt
 
 = Editing the theme =
 
-Now for the last part, where you customise your page.php to look the
-way you want it to look. If you go to the bottom of page.php you will
-see the HTML code. It is very short, in a future release this may be
-included instead from a template.php file much the same.
+This software has many methods starting with print which you can read
+about in REFERENCE.txt - and only some of them belong in your template.
+At the bottom of the page.php file is an inbuilt template. However I
+have already provided a template.php - and if this file exists along
+with page.php it will be loaded.
 
-With the HTML code one may want to customise it. What comes with the
-site is very simple. If you have a look you should find is straight-
-forward enough. It renders things within the template with functions in
-PHP which start with 'print.'
+In a template there are calls to various methods in page.php which are
+for printing things. They all start with the letters 'print' - yet some
+print methods are not for the template and are merely dependencies. It
+is recommended you make your own template.php and you can base this off
+the one that comes with this project.
 
-However if you call methods within my PHP and not limit yourself to the
-ones I have used in the HTML after the <head>, you may create terrible
-bugs.
+= Farewell =
 
-Yet this picosite is secure, even from you, as such a malfunction of
-the software should only cause bad rendering. It will not do anything
-that changes your system. There is no such code, and as such one can
-experiment a lot with picosite.
-
-To make experimenting easier I will develop a 'reference.txt' and you
-should go have a look because it might just be there.
-
-Anyway, if you have followed all of this guide you have done everything
-in picosite possible, except its infinite page capacity. I hope you enj-
-oy it because it can't make changes to the system. That is a point for
-its security bonus. 
-
-More will come in terms of features, and some things will change. If
-you see an error in the docmentation or a bug in the code email me at
-kaizushi@infantile.us or kaizushi@cock.li
+Anyway, you should now know how to use picosite.
