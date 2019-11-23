@@ -7,7 +7,7 @@ define("SOFTNAME", "picosite 1.1.2");
 define("SITEAUTHOR", "A picosite user");
 define("SITELOGO", "sitelogo.png");
 
-define("DEBUGOUT", false);
+define("DEBUGOUT", true);
 define("TRACEOFF", true); 
 define("ALWAYSTRACE", false);
 define("CURRENCY_SYM", "$");
@@ -33,6 +33,11 @@ function printDebug($msg) {
 		file_put_contents("debug.log", $msg . "\n", FILE_APPEND | LOCK_EX);
 		echo "<br>";
 	}
+}
+
+function printDebugArray($msg, $array) {
+	printDebug($msg);
+        foreach ($array as $key => $value) printDebug($key . " = " . $value);
 }
 
 function transSecureSysName($string) {
@@ -87,11 +92,12 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		$fn = NULL;
 
 		$parts = explode('.', $file);
+
 		$title = $parts[0];
 		if (((transEnd($file, ".blog.page") || transEnd($file,".guide.page") || transEnd($file,".sub.page"))
 		      && count($parts)) == 3) {
 			$type = $parts[1];
-		} elseif (transEnd($file, ".page") && count($parts) == 2) {
+		} elseif (transEnd($file, ".page") && (count($parts) == 2) || count($parts) == 4) {
 			$type = "page";
 		}
 
@@ -99,8 +105,8 @@ function getPageTitles($files, $subpage = "[NONE]") {
 			continue;
 		}
 
-		if (!is_null($_GET['l'])) { 
-			$lang = $parts[2];
+		if (!is_null($_GET['l'])) {
+			$lang = $_GET['l'];
 			$inslang = "." . $lang . ".trans";
 		}
 			
@@ -237,7 +243,7 @@ function getPageFile($subpagedir = "[NONE]") {
 		$fn = "blogs/" . $_GET['b'] . $inslang . ".blog.page";
 	}
 	
-	if (is_null($_GET['l']) && is_null($_GET['g']) && is_null($_GET['b']) && !is_null($_GET['sp'])) {
+	if (is_null($_GET['g']) && is_null($_GET['b']) && !is_null($_GET['sp'])) {
 		if ($subpagedir === "[NONE]") {
 			$subname = getPageSubpage($_GET['q'] . ".page");
 			if ($subname === "[NOFILE]") {
@@ -248,8 +254,8 @@ function getPageFile($subpagedir = "[NONE]") {
 				$subpagedir = $subname;
 			}
 		}
-		
-		$fn = $subpagedir . "/" . $_GET['sp'] . ".sub.page";
+
+		$fn = $subpagedir . "/" . $_GET['sp'] . $inslang . ".sub.page";
 	}
 	
 	return $fn;
@@ -555,16 +561,12 @@ function printPageBody() {
 }
 
 function printLinkTop() {
-	$files = scandir(".");
-	$relevant = array();
-	$links = array();
-	foreach ($files as $file) {
-		if (transEnd($file, ".page")) {
-			array_push($relevant, $file);
-		}
-	}
+	if (!is_null($_GET['l'])) $files = glob("./*.trans.page");
+	else $files = glob("./*.page");
 
-	$links = getPageTitles($relevant);
+	$links = array();
+
+	$links = getPageTitles($files);
 
 	$ordered = array();
 
@@ -617,8 +619,13 @@ function printLinksLangs() {
 	}
 
 	echo '<a href="/page.php?q=' . $_GET['q'] . '">English</a> ';
+
+	$subpglink = "";
+
+	if (!is_null($_GET['sp'])) $subpglink = "&sp=" . $_GET['sp'];
+
 	foreach ($langs as $key => $value) {
-		echo '<a href="/page.php?q=' . $_GET['q'] . '&l=' . $key . '">' . $value . '</a> ';
+		echo '<a href="/page.php?q=' . $_GET['q'] . '&l=' . $key . $subpglink . '">' . $value . '</a> ';
 	}
 
 	echo "<br>";
