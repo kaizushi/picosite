@@ -380,6 +380,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 
 		foreach ($blogdir as $blog) {
 			if ($blog === ".." || $blog === ".") continue;
+			if (is_null($_GET['l']) && transEnd($blog, ".trans.blog.page")) continue;
 
 			if (transEnd($blog, ".blog.page")) {
 				$fileparts = explode('.', $blog);
