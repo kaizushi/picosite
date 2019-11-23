@@ -1,8 +1,14 @@
-%%##title=Main Page of New picosite
-<p>picosite is a highly secure CMS because it has no code to change things! One must upload pages or write them in an SSH shell on their webserver.
-<p>picosite has many features but ultimately only requires a main page.
-<p>You have installed picosite and are now seeing its only page. This page is the main one and it must exist. It is the page that loads at the start of the site.
-<pre>
-%%##incld=LICENSE
-</pre>
-<p>I hope that documentation was useful and you have your picosite running.
+%%##title=Home
+<p>Welcome to your picosite demo, this is a working site with every feature enabled. This serves to demonstrate picosite and what it can do. Firstly though, what is it for? This is for dark web vendors who wish to have a site which cannot be defaced, and advertise things like prices and contain things like GPG keys and even a canary.
+<p>It allows for much content to go on a site, and information on your products and services. One can use it on hosting like my own at <a href="https://kloshost.online">Kaizushi's Little Onion Server</a> where one gets a nice SSH shell, which can be used to configure cron. This demo site is also always available <a href="https://picosite.kloshost.online">online</a>.
+<p>If you are on the demosite now yourself you can go to <a href="https://github.com/kaizushi/picosite/tree/demosite">its Github branch for the project</a>.
+<p>To get the demosite running on your system or web hosting account one can use git.
+<p>The first step is to clone picosite...
+<pre>$ git clone https://github.com/kaizushi/picosite</pre>
+<p>Then checkout the demosite branch...
+<pre>$ git checkout demosite</pre>
+<p>You should check out <a href="/page.php?q=licence">the licence</a> under which I release this software, which is called the MIT licence.
+<p>Once you have checked out the branch and such you need to install it to your web directory.
+<p>To configure your picosite you should read the <a href="/page.php?q=readme">readme</a> file.
+<p>The prices on the offical demosite hosted on my servers are legit and what I will charge to install the software for you.
+<p>If you have problems with the software you should leave a post on the <a href="https://github.com/kaizushi/picosite/issues">Github picosite repo issues page</a>. You can also contact me at kaizushi at infantile dot us by email.

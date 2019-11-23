@@ -1,0 +1,36 @@
+%%##title=Contribute
+<h2>My policy on contributions</h2>
+<p>I am open to many contributions to my codebase, and some things are much sought for. People who contribute will get not such credits, but a reference and can use me to vouch for their ability. This means you can cite my contact details to potential employers and such, and I will respond. However it is based entirely on merit and what you achieve.
+<p>I have many ideas of my own I am not sure how to implement. You can also check the projects TODO file and find things that need doing. You can even just suggest ideas to go in that file, as long as I like them.
+<p>If you just want to make my code better you can go right ahead. A better, harder, faster, stronger picosite is much desired. It is at the time of writing in November 2019 in its infancy.
+<p>Please read up on the principles behind it in the README.txt and know that I <b>hate</b> pragmatists. You should try to be Newton, but if you want to be Einstien keep your hypothesis as words until you have code that proves the possible and actual. What I mean is do not send me code that does not work and breaks things, it may lead to you being ignored. Newton uses experiments, which in this case means you test your code and unit test well.
+<p>Contributions as such are not like the Products where you pay me to write features. What you push to my Github repo of course if for the whole world. Take heed to the MIT licence, as you must be happy for someone to fork and make cash money from your work.
+<h2>Where one could be useful</h2>
+<p>I am not sure how I am going to cache the page files to stop them being loaded multiple times. As the code is not allowed to write anything it must be stored in memory. I want to keep OOP out, a nice way would be a class for page files of various kinds that has some static variables. I would like another way, I want this project to be a little C like wherein the code is simple for a novice programmer to comprehend, it helps contributors.
+<p>We could have a bunch more print functions and ways of obtaining data. Such a thing could be a gallery for images. This would then mean some constant hard-coded variables and a convention for the file names of images that appear in pages. The price printing for example could involve more currencies. Stock market simulated trading would also be cool, but you can use your imagination.
+<p>Not everything has to be inside picosite, a composer for this software could be made. It could be isolated in a different hosting account using a new login group that is sticky for the composer. As such it would be able to make files picosite can read of the right owner, but picosite cannot change them.
+<p>There are a bunch of ideas in the TODO.txt that I plan on doing and have a rough idea how I will do it. This does not mean you can't do them, so that could be something to check out.
+<h2>How to proceed</h2>
+<p>I was once, starting this software as my own site, a developer without a clue about Git whatsoever. You might be the same, but still have some PHP wisdom and innovation in you. It is pretty easy to use git with the Github.
+<p>You can clone my sources and start working on them...
+<pre>
+$ git clone https://github.com/kaizushi/picosite
+</pre>
+<p>You must check out fiddling if you want to fiddle around (experiment)...
+<pre>
+$ git checkout fiddling
+</pre>
+<p><b>Do not merge into master, I will never pull that in. For now master is mine!</b>
+<p>You can then <a href="https://akrabat.com/the-beginners-guide-to-contributing-to-a-github-project/">contribute to the project</a> by sending me a pull request, just follow the guide.
+<p>Of course, if you are doing something big you might want to make your own branch. A branch is basically a fork, a copy, that is independent. I do not want your branch, use your Git repo / account. To make a branch...
+<pre>
+$ git checkout -b featurename
+</pre>
+<p>Once you have done that, the code is now yours to play with.
+<p>However, it is your job to get it into fiddling after that and as such you do the following...
+<pre>
+$ git checkout fiddling
+$ git merge featurename
+</pre>
+<p>Of course <em>featurename</em> is your name for the branch, and I do not have to care what it is.
+<p>I hope you send me some badass features as a contributor. You will end up on the <a href="/page.php?q=credits">picosite credits</a>. If I accept your pull request assume I am also now a reference for your future employment.

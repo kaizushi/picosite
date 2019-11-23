@@ -1,0 +1,35 @@
+%%##title=Products
+<h2>Features on Request
+<p>picosite is free and open source software under the MIT licence. One benefit to this is I can write features which are not part of the main release on Github.
+<p>This means you can request a feature from me for picosite of your own kind. There will be for your feature in the offical release a hook that tries to load its PHP file. Thus, it is still safe to update your picosite using the master Git branch on the Github.
+<p><b>The prices on this page are a minimum and quotes may be higher depending on the amount of work.</b>
+<p><em>If your feature is a great idea it may be free and included in the picosite software. You will also be mentioned in the credits.</em>
+<h3>What features can't have...</h3>
+<li>
+<ul>They cannot break the principle that picosite doesn't use methods which can make system/user changes.</ul>
+<ul>They cannot be complex modifications to methods in page.php, as such, even if code is redundant it must be in its own PHP and page.php only is changed to try calling it.</ul>
+<ul>Your feature must have a unique system name, I can usually do this for you.</ul>
+<ul>Your feature must be released under the MIT licence and I reserve the right to distribute it any way I please, for sale or otherwise for free.</ul>
+<ul>Your feature must be coherently expressed and not leave large aspects of its development to my imagination.</ul>
+</li>
+<h2>Fixing Bugs in your Mods/Features</h2>
+<h3>What I can and will fix...</h3>
+<li>
+<ul>Code that is mostly working and just needs an expert look.</ul>
+<ul>Code must follow picosite principles, apart from backward compatability since it is your feature and your problem.</ul>
+<ul>It must not make the core change files on the system</ul>
+<ul>You must provide with your code the page files and such that make it work.</ul>
+<ul>It must not be a severe change to page.php, and that core part of picosite must only include it and such at the beginning.</ul>
+</li>
+<h2>On the bright side you can...
+<p><b>Do things completely without me, these are just rules for eliciting my help.</b>
+<h2>List of products...</h2>
+<p>Products are for things like a JSON script that fetches data, also a method that prints info about them. One can request a format parser for their preferred way of writing a page. One can get a script that uploads content from their Linux box, and optimise your code for SELinux environments. We can install the code to a webhost for you, as long as they don't suck. We can also migrate between hosts. One can have their theme customised, the most basic offer being to change colors and background imagary. We can give advice on how to configure your server backend if you are self-hosting.
+<p>If what you want is not on the list we may still be able to help you, do not be shy, and do not ask if it okay to ask a question, just ask the question.
+<p><b>All the prices below are a minimum for the most basic kind of job in that area. If your job is complicated prices may get higher.</b>
+<p><em>Please when requesting your feature by email to use as much context and description as possible. I may wish to speak to you on an instant messenger, that is an XMPP one, to ask questions and get to what you actually want.</em>
+%%##prices=all
+<h2>Doing the transaction</h2>
+<p><b>Email me and I will reply with an invoice. The invoice will contain prices I've selected from the current Monero & Bitcoin markets. If you do not like them, for example if there has been a significant change in market rates you can suggest your own conversion rates or request new rates.</b>
+<p>You can get my email and contact details on the <a href="/page.php?q=contact">contact</a> page.
+<p>If you are breaking the above rules in a severe and highly unprincipled way I may not even respond to your email.

@@ -1,0 +1,11 @@
+%%##title=The latest release
+<p>Today is a red letter day my friends. I worked hard to unit test and get the 'fiddling' branch into master. I had to do a release after that release so the minor version increased twice.
+<p>I got everything working, and my testing is through site usage. I did however have an error copypasting the template from main.page where it used to be and still is, to its redundant template.php - and as such it was loading that file and skipping what is in main.page (if this makes no sense learn about the project principles).
+<p>So I fixed that up and stuff, and also I failed to increment the version in the README. I made a clone of the <a href="https://kloshost.online">KLOS</a> website on a secret hidden service. With its page files and data I tried the new main.page there, and everything appears to work. In fact, it works better.
+<p>Now pages hide if a translation is not available, and there is more efficient code ending a horrifying block of if statements in determining what file to load to handle a request. There are many other benefits now in 'master' though I must warn the TODO is behind on what I've done.
+<p>The code is ready for a simple person and so is the <a href="/page.php?q=readme">readme</a> and one can start shilling their drugs, guns, and carding or just honourable Onionland hosting like yours truly. By the way all three of those other things are fine at KLOS.
+<p>You do not need to use every feature you see on this site and KLOS and can actually just have one page. You can build your site by demand!
+<p>Then I created a new branch on Github called demosite so you can see the sources for this website. I am almost done with it, and then I can finally do the TODO.txt and stuff I've missed. The demosite is also the actual website for the project.
+<p>The services on this site, once again, are real and available. As such there is much I won't want in this you might want. With the freedom the of the <a href="/page.php?q=licence">MIT licence</a> you can have your own code. If it is clever I may want to share it.
+<p>Anyway, I hope you enjoy the software and read <a href="/page.php?q=about">about its story</a>. It was quite an adventure and involved escaping theocracy, and there was even black-market canned ham involved.
+<p>I must go, I have an itch fullbush (my female neckbeard) for I am unwashed.

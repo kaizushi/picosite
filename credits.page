@@ -1,0 +1,11 @@
+%%##title=Credits
+<h2>Heroes of picosite...</h2>
+<h3>Kaizu Shibata</h3>
+<p>Kaizu started the project and someone wanted the code for their site. Now it is open source and anyone can use it to vend anything by emails and such. This code is the foundation of the home page for <a href="https://kloshost.online">kloshost.online</a>.
+<h3>The dependencies...</h3>
+<p>Kaizu would not have done any of this without Gentoo Hardened and Tor. A nice webserver to run it is nginx, and of course it is written in PHP.
+<h3>Democracy...</h3>
+<p>Kaizu must also thank the Western Enlightenment for freeing her from the hell on earth that is Arabia.
+<h3>Your Name Here</h3>
+<p>You can become a <a href="/page.php?q=contribute">contributor</a> and get on this list and even suggest your heroes and influences for the rest of it.
+<p>You can also <a href="/page.php?=donate">donate</a> if you are just a selfish drug lord who wants to securely shill their goods and services.

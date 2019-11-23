@@ -1,0 +1,78 @@
+%%##title=Contact
+<p>This page for now merely relays how to contact myself, Kaizu Shibata, for convenience. If more developers step up and contribute code they may also be here.
+<p>You can also find contact details of more details and extra GPG keys (for insurance) at <a href="https://kloshost.online/page.php?q=contact">my KLOS contact page</a>.
+<p>Keep in mind issues with this software are best posted on the <a href="https://github.com/kaizushi/picosite/issues">Github repo issues page</a>.
+<p>The purpose of these contact details is for the products listed on this site. As I use the MIT licence such products can be very seperate from the main project. Other matters for these contact details is basic support with installation to your favorite webhosting company, and even the creation or customisation of the themes and HTML pages.
+<h2>XMPP</h2>
+<p>A lot of OTR clients are vulnerable on deep web systems like Whonix and Tails, because they are ran for short periods of time and have <b>low entropy</b>. Clients such as Pidgin have frequent RCEs which can get keys stolen. OTR implementations as far as I know implement no password encryption for private keys. As such I only use <b>OMEMO</b> for instant messaging.
+<p><b>OMEMO</b> is a plugin for the Gajim messenger, and requires axolotl to be installed with pip. You do not need root for this, and it is this simple:
+<pre>$ pip install python-axolotl --user</pre>
+<p>Once you have done that you can enable the OMEMO plugin in Gajim and talk to me. For keys see the KLOS contact page linked above, which saves me updating two sites. Do actually check the fingerprints or it is useless!
+<p>Infantile is non-federated and as such you need an Infantile account to use it. It is the best option without OMEMO because it is ejabberd of my control with amnesia. It only stores a RAM copy of any messages.
+<h3>Accounts...</h3>
+<ul>
+<li>kaizushi@404.city</li>
+<li>kaizushi@infantilefb6ovh4.onion</li>
+</ul>
+<h2>Email/GPG</h2>
+<h3>kaizushi@infantile.us</h3>
+<p><em>There are other email accounts available on the KLOS contact page linked above</em>
+<h3>GPG for the above email...</h3>
+<pre>
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+GiY+ZpZ4LM30hKNCRg==
+=lJCS
+-----END PGP PUBLIC KEY BLOCK-----
+</pre>
+<p><b>GPG is easy!</b> All it is about is getting my key with trust. As far as me trusting you, if you begin a stranger under a pseudonym I can trust you are the same stranger tomorrow.
+<h2>Dread</h2>
+<h3><a href="http://dreadditevelidot.onion/u/kaizushi">kaizushi on Dread</a></h3>
+<p>Dread is a bit unreliable and is often down and should only be used as a last resort. Do not be lazy, if you can manage other contact methods use them.

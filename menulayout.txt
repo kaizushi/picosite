@@ -1,0 +1,6 @@
+main
+licence
+readme
+contribute
+credits
+donate
