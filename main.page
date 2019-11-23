@@ -1,5 +1,5 @@
 %%##title=Home
-<p>Welcome to your picosite demo, this is a working site with every feature enabled. This serves to demonstrate picosite and what it can do. Firstly though, what is it for? This is for dark web vendors who wish to have a site which cannot be defaced, and advertise things like prices and contain things like GPG keys and even a canary.
+<p>Welcome to your picosite demo, this is a working site with most features enabled. This serves to demonstrate picosite and what it can do. Firstly though, what is it for? This is for dark web vendors who wish to have a site which cannot be defaced, and advertise things like prices and contain things like GPG keys and even a canary.
 <p>It allows for much content to go on a site, and information on your products and services. One can use it on hosting like my own at <a href="https://kloshost.online">Kaizushi's Little Onion Server</a> where one gets a nice SSH shell, which can be used to configure cron. This demo site is also always available <a href="https://picosite.kloshost.online">online</a>.
 <p>If you are on the demosite now yourself you can go to <a href="https://github.com/kaizushi/picosite/tree/demosite">its Github branch for the project</a>.
 <p>To get the demosite running on your system or web hosting account one can use git.
