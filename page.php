@@ -13,8 +13,8 @@ define("ALWAYSTRACE", false);
 define("CURRENCY_SYM", "$");
 define("MAINLANG", "English");
 
-if (file_exists("config.php") include_once("config.php");
-if (file_exists("parser.php") include_once("parser.php");
+if (file_exists("config.php")) include_once("config.php");
+if (file_exists("parser.php")) include_once("parser.php");
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
