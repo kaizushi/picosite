@@ -2,16 +2,11 @@
 
 // picosite is almost a CMS, its a light way to have a site.
 
-define("SITENAME", "A Fresh new picosite");
-define("SOFTNAME", "picosite 1.1.2");
-define("SITEAUTHOR", "A picosite user");
-define("SITELOGO", "sitelogo.png");
+define("SOFTNAME", "picosite 1.1.3");
 
 define("DEBUGOUT", false);
 define("TRACEOFF", true); 
 define("ALWAYSTRACE", false);
-define("CURRENCY_SYM", "$");
-define("MAINLANG", "English");
 
 if (file_exists("config.php")) include_once("config.php");
 if (file_exists("parser.php")) include_once("parser.php");
