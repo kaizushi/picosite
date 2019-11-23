@@ -7,7 +7,7 @@ define("SOFTNAME", "picosite 1.1.2");
 define("SITEAUTHOR", "A picosite user");
 define("SITELOGO", "sitelogo.png");
 
-define("DEBUGOUT", true);
+define("DEBUGOUT", false);
 define("TRACEOFF", true); 
 define("ALWAYSTRACE", false);
 define("CURRENCY_SYM", "$");
@@ -82,14 +82,10 @@ function getLinkMain() {
 function getPageTitles($files, $subpage = "[NONE]") {
 	$newFiles = [];
 
-	printDebugArray("getPageTitles(): starting with \$files...", $files);
 
 	foreach ($files as $file) {
 		$paths = explode("/", $file);
 			
-		printDebugArray("getPageTitles() \$paths...", $paths);
-		printDebug("getPageTitles() count(\$paths) = " . count($paths));
-		printDebug("getPageTitles() \$paths[0] = " . $paths[0]);
 
 		if (count($paths) == 2) {
 			$file = $paths[1];
@@ -103,9 +99,7 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		$parts = explode('.', $file);
 		$title = $parts[0];
 		
-		printDebug("getPageTitles() count (\$parts) " . count($parts));
 
-		printDebug("getPageTitles() \$file = $file and \$dir = $dir");
 		if ((transEnd($file, ".blog.page") && $dir === "blogs") ||
 		    (transEnd($file, ".guide.page") && $dir === "guides") ||
 		    (transEnd($file, ".sub.page") && $dir === $subpage)) {
@@ -118,7 +112,6 @@ function getPageTitles($files, $subpage = "[NONE]") {
 			$type = "page";
 	
 		}
-		printDebug("getPageTitles() \$type = $type");
 
 		if (($subpage === "[NONE]") && $type === "sub") {
 			continue;
@@ -136,13 +129,11 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		if ((($type === "page") && transEnd($file, ".page")))
 			$fn = $title . $inslang . ".page";
 		
-		printDebug("getPageTitles() \$fn = $fn");
 		if (!is_null($fn)) { 
 			array_push($newFiles, $fn);
 		}
 	}
 
-	printDebugArray("getPageTitles() \$newFiles...", $newFiles);
 
 	$files = $newFiles;
 	$titledRefs = [];
@@ -180,7 +171,6 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		if (!$hastitle) $titledRefs[$node] = "Untitled Page";
 	}
 
-	printDebugArray("getPageTitles() \$titledRefs...", $titledRefs);
 	return $titledRefs;
 }
 
@@ -495,7 +485,6 @@ function printSubpage($groupname) {
 
 	if (is_null($_GET['sp'])) {
 		$subpagesdir = scandir($groupname . '/');
-		printDebugArray("printSubpage(): \$subpagesdir...", $subpagesdir);
 
 		$inslang = "";
 		$getlang = "";
@@ -511,13 +500,11 @@ function printSubpage($groupname) {
 			$exploded = explode('.', $subpage);
 			$thissub = $exploded[0];
 			$fn = $groupname . '/' . $thissub . $inslang . ".sub.page";
-			printDebug("printSubpage: \$fn = $fn");
 
 			array_push($subpages, $groupname . '/' . $thissub . $inslang . ".sub.page");
 		}
 
 		$titled = getPageTitles($subpages, $groupname);
-		printDebugArray("printSubpage(): \$titled...", $titled);
 	
 		echo "<ul>";
 		foreach($titled as $node => $title) {
