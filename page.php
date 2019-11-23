@@ -81,25 +81,44 @@ function getLinkMain() {
 
 function getPageTitles($files, $subpage = "[NONE]") {
 	$newFiles = [];
+
+	printDebugArray("getPageTitles(): starting with \$files...", $files);
+
 	foreach ($files as $file) {
 		$paths = explode("/", $file);
+			
+		printDebugArray("getPageTitles() \$paths...", $paths);
+		printDebug("getPageTitles() count(\$paths) = " . count($paths));
+		printDebug("getPageTitles() \$paths[0] = " . $paths[0]);
+
 		if (count($paths) == 2) {
 			$file = $paths[1];
-		};
+			$dir = $paths[0];
+		}
 
 		$lang = NULL;
 		$inslang = "";
 		$fn = NULL;
 
 		$parts = explode('.', $file);
-
 		$title = $parts[0];
-		if (((transEnd($file, ".blog.page") || transEnd($file,".guide.page") || transEnd($file,".sub.page"))
-		      && count($parts)) == 3) {
-			$type = $parts[1];
-		} elseif (transEnd($file, ".page") && (count($parts) == 2) || count($parts) == 4) {
+		
+		printDebug("getPageTitles() count (\$parts) " . count($parts));
+
+		printDebug("getPageTitles() \$file = $file and \$dir = $dir");
+		if ((transEnd($file, ".blog.page") && $dir === "blogs") ||
+		    (transEnd($file, ".guide.page") && $dir === "guides") ||
+		    (transEnd($file, ".sub.page") && $dir === $subpage)) {
+		    	if (count($parts) == 3) {
+				$type = $parts[1];
+			} elseif ( count($parts) == 5) {
+				$type = $parts[3];
+			}
+		} elseif (transEnd($file, ".page") && $dir === ".") {
 			$type = "page";
+	
 		}
+		printDebug("getPageTitles() \$type = $type");
 
 		if (($subpage === "[NONE]") && $type === "sub") {
 			continue;
@@ -117,10 +136,13 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		if ((($type === "page") && transEnd($file, ".page")))
 			$fn = $title . $inslang . ".page";
 		
+		printDebug("getPageTitles() \$fn = $fn");
 		if (!is_null($fn)) { 
 			array_push($newFiles, $fn);
 		}
 	}
+
+	printDebugArray("getPageTitles() \$newFiles...", $newFiles);
 
 	$files = $newFiles;
 	$titledRefs = [];
@@ -158,6 +180,7 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		if (!$hastitle) $titledRefs[$node] = "Untitled Page";
 	}
 
+	printDebugArray("getPageTitles() \$titledRefs...", $titledRefs);
 	return $titledRefs;
 }
 
@@ -472,27 +495,33 @@ function printSubpage($groupname) {
 
 	if (is_null($_GET['sp'])) {
 		$subpagesdir = scandir($groupname . '/');
+		printDebugArray("printSubpage(): \$subpagesdir...", $subpagesdir);
 
 		$inslang = "";
 		$getlang = "";
 
 		if (!is_null($_GET['l'])) {
-			$inslang = $_GET['l'] . ".trans";
+			$inslang = "." . $_GET['l'] . ".trans";
 			$getlang = "&l=" . $_GET['l'];
 		}
 
 		foreach($subpagesdir as $subpage) {
-			if ($subpage === ".." || $subpage == ".") continue;
+			if ($subpage === ".." || $subpage === ".") continue;
 
 			$exploded = explode('.', $subpage);
 			$thissub = $exploded[0];
+			$fn = $groupname . '/' . $thissub . $inslang . ".sub.page";
+			printDebug("printSubpage: \$fn = $fn");
+
 			array_push($subpages, $groupname . '/' . $thissub . $inslang . ".sub.page");
 		}
 
 		$titled = getPageTitles($subpages, $groupname);
+		printDebugArray("printSubpage(): \$titled...", $titled);
 	
 		echo "<ul>";
 		foreach($titled as $node => $title) {
+			if ($title === "Missing File") continue;
 			echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . $getlang .  '">' . $title . "</a></li>\n";
 		}
 		echo "</ul>";
