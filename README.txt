@@ -28,6 +28,10 @@ what is here are not-existent.
 	and it is very easy.
 * Pages, as such pages just sit in the same file as page.php which is the
 	brains of picosite. 
+* Intentional Redundant Code, at the bottom of page.php is the same code as
+	template.php but if you have the template it is ignored. This allows
+	you to go without it and do things simple. If you want your own nice
+	theme you should make a template.
 * A static menu, a file called menulayout.txt can put Pages in a top menu
         where the order is preserved as what you put in menulist.txt
 * A automatic menu, which is every page except those in the static menu.
@@ -35,14 +39,13 @@ what is here are not-existent.
 * Include, there is a picocall to include some other file in a page.
 	I find this useful for doing a canary or providing GPG keys.
 * Translations, these also sit in the directory with page.php and there is
-	a text file for a list of languages.
+	a text file for a list of languages. You can also have translations
+	for guides, blogs, subpages, and soon prices.
 * Blogs, a directory called 'blogs' can be created and files placed within
 	for adding to the blog. It uses the modification time of the file
 	to know the date of a blog. There is a picocall to put it in Pages
 	which includes a list of blogs, and also it displays a blog when
 	a blog that exists is specified by name in the GET value 'b'.
-	Blogs now have experimental multi-language support that is not yet
-	tested.
 * Latest blog post, in the header of every page unless you are viewing
         a blog post or the listing of blogs - is the latest blog post.
 * Subpages, these are replacing guides and are similar code. They allow one
@@ -80,6 +83,8 @@ what is here are not-existent.
 	methods. These will be broken up into more methods.
 
 === Introduction ===
+
+[[[Skip to line 185 to jump to how to use your picosite]]]
 
 = Credits and How it Began =
 
@@ -226,18 +231,13 @@ one which came with picosite. This page is the 'home' of your website.
 This page is required and you will get a 404 if you delete it. Set the
 title of the page wish the picocode below:
 
- %%##title=The Page Title
+%%##title=The Page Title
 
 This is the first picocode you learn and The Page Title can be anything
 you like. This is required on all Pages you create. In future the page
 title will be able to handle HTML. For now the HTML works somewhere but
 in the title bar it would display. The trick will be to filter it out
 so one can put emphasis on headings and menu items.
-
-(The space at the start is there because this readme is called by the
-default picosite, and the title setting line above rendered so one
-could not see it, and was changing the page title of the main.page
-which includes it)
 
 After this step that is required, the parts that come are optional and
 you don't use them. The main page uses the same syntax as any other
@@ -273,7 +273,7 @@ will be learning the rest as you read.
 Then you might want to include something in a page, as such you can use
 this picocode:
 
- %%##incld=filename.txt
+%%##incld=filename.txt
 
 You can include any page you want however I because of restrictions
 of page filenames not allowing slashes (/) you can't include files
@@ -301,7 +301,7 @@ are not able to render pages in subpage directories.
 So next you might want a blog on the site, so to do that create a
 page, I suggest you call it blog.page and it must have this picocode...
 
- %%##blogs
+%%##blogs
 
 This will not work until you do two more things. You must also create
 a folder called 'blogs', and create a blog inside it. I suggest you don't
@@ -380,7 +380,7 @@ to show the list. Like the blogs, you should put something around it
 and there should be a title for the page. You should describe your
 products and such. The picocode for showing the price list is:
 
- %%##price
+%%##price
 
 This will list every price in a file you create called 'itemlist.txt'
 which is comma seperated. It has a human readable name and then a price
@@ -423,7 +423,7 @@ static and ugly feature called 'guides' for picosite.
 
 One can make a page for guides and put this picocode in it:
 
- %%##guide
+%%##guide
 
 This will trigger calling a picosite fuction that displays the guides
 on a page. Once you have done this a folder called 'guides' is required
@@ -450,7 +450,7 @@ You could create a file called 'poems.page' in your main directory and
 then a folder with it. If your folder was 'poetry' you could use this
 picocode to create its root subpage.
 
-  %%##subpg=poetry
+%%##subpg=poetry
 
 The Page you do this to is a root subpage and it will display a list of
 files you create in our directory. The files in the directory like most

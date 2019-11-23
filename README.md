@@ -2,7 +2,7 @@
 ## Introduction
 A secure CMS / site generator, which only knows how to read files you create. It has no code that can write to the system. It just checks for files.
 
-In only roughly 500 lines of code!
+In only roughly 750 lines of code!
 
 There are two branches 'master' is stable and so you can clone right away. There is another branch where I iteratively change stuff and see what happens called 'fiddling' because I just fiddle around with stuff.
 
