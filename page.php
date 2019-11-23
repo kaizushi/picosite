@@ -98,8 +98,8 @@ function getPageTitles($files, $subpage = "[NONE]") {
 
 		$parts = explode('.', $file);
 		$title = $parts[0];
-		
 
+		
 		if ((transEnd($file, ".blog.page") && $dir === "blogs") ||
 		    (transEnd($file, ".guide.page") && $dir === "guides") ||
 		    (transEnd($file, ".sub.page") && $dir === $subpage)) {
@@ -133,7 +133,6 @@ function getPageTitles($files, $subpage = "[NONE]") {
 			array_push($newFiles, $fn);
 		}
 	}
-
 
 	$files = $newFiles;
 	$titledRefs = [];
@@ -364,21 +363,37 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 			return;
 		}
 
-		$blogdir = scandir("blogs/");
+		if (!is_null($_GET['l'])) $blogdir = glob("blogs/*.trans.blog.page");
+		else $blogdir = glob("blogs/*.blog.page");
+
 		$blogs = [];
 		$x = 0;
 
+		$inslang = "";
+		$getlang = "";
+		
+
+		if (!is_null($_GET['l'])) {
+			$inslang = "." . $_GET['l'] . ".trans";
+			$getlang = "&l=" . $_GET['l'];
+		}
+
 		foreach ($blogdir as $blog) {
+			if ($blog === ".." || $blog === ".") continue;
+
 			if (transEnd($blog, ".blog.page")) {
 				$fileparts = explode('.', $blog);
 				$name = $fileparts[0];
-				$ctime = filemtime('blogs/' . $name . ".blog.page");
-				$blogs[$x + $ctime] = "blogs/" . $name . ".blog.page";
+				$fn = $name . $inslang . ".blog.page";
+				$ctime = filemtime($fn);
+				$blogs[$x + $ctime] = $fn;
 				$x++;
 			}
 		}
 
 		krsort($blogs);
+
+
 		$titled = getPageTitles($blogs);
 		$blogs = transStripNode($blogs);
 
@@ -402,7 +417,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 
 			if (($x - $start) >= 0) {
 				echo '<td><a href="/page.php?q=' . $_GET['q'] . '&b='
-					. $thenode . '">' . $thetitle . "</a></td>\n";
+					. $thenode . $getlang . '">' . $thetitle . "</a></td>\n";
 			}
 
 			if (($x - $start) == $amount) break;
