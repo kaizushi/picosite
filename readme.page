@@ -1,4 +1,4 @@
-%%##title=Readme and Documentation
+%%##title=Documentation
 <p>In the picosite files there is a README document that is updated with the project. It should be consistent with the latest version in the master branch.
 <pre>
 %%##incld=README.txt
