@@ -715,7 +715,7 @@ table {
 </style>
 <body>
 <center>
-error_reporting(E_ALL);<?php printLinksLangs(); ?>
+<?php printLinksLangs(); ?>
 <a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
 <p><?php printLinkTop(); ?><br><br>
 <?php printBlog(True); ?>
