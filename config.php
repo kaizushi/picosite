@@ -1,9 +1,9 @@
 <?php
 #your settings go here
 
-define("SITENAME", "A Fresh new picosite");
+define("SITENAME", "Picosite");
 define("SITELOGO", "sitelogo.png");
-define("SITEAUTHOR", "Anonymous");
+define("SITEAUTHOR", "Kaizu Shibata");
 define("CURRENCY_SYM", "$");
 
 #devs: these variables should also be in page.php and enable defaults before including config.php
