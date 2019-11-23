@@ -3,7 +3,7 @@
 The current version is 1.1.3 and it was released on the 23rd of November 2019, twice, because of bugs pushed to master. All is well now!
 
 ## Introduction
-A secure CMS / site generator, which only knows how to read files you create. It has no code that can write to the system. It just checks for files. To see it in action check out the [picosite](https://picosite.kloshost.online) website which uses most features.
+A secure CMS / site generator, which only knows how to read files you create. It has no code that can write to the system. It just checks for files. To see it in action check out the [picosite](https://picosite.kloshost.online) website which uses most features, and you can see the source of this site in the 'demosite' branch.
 
 In only roughly 750 lines of code!
 
