@@ -13,8 +13,8 @@ define("ALWAYSTRACE", false);
 define("CURRENCY_SYM", "$");
 define("MAINLANG", "English");
 
-include_once("config.php");
-include_once("parser.php");
+if (file_exists("config.php") include_once("config.php");
+if (file_exists("parser.php") include_once("parser.php");
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
@@ -715,7 +715,7 @@ table {
 </style>
 <body>
 <center>
-<?php printLinksLangs(); ?>
+error_reporting(E_ALL);<?php printLinksLangs(); ?>
 <a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
 <p><?php printLinkTop(); ?><br><br>
 <?php printBlog(True); ?>
