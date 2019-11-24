@@ -18,7 +18,7 @@ table {
 <body>
 <center>
 <?php printLinksLangs(); ?><br>
-<?php printDomains("Our other domains for this site...") ?><br>
+<?php printDomains("mirrors: ") ?><br>
 <a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
 <p><?php printLinkTop(); ?><br><br>
 <?php printBlog(True); ?>
