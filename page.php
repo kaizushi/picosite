@@ -279,6 +279,7 @@ function printDomains($msg) {
 
 	echo "$msg";
 	foreach ($domains as $domain) {
+		if ($_SERVER['HTTP_HOST'] === $domain) continue;
 		echo '<a href="https://' . $domain . '/' . '">' . $domain . "</a> ";
 	}
 	echo "\n";
