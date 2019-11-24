@@ -268,6 +268,22 @@ function getPageFile($subpagedir = "[NONE]") {
 	return $fn;
 }
 
+function printDomains($msg) {
+	if (file_exists("domainlist.txt")) {
+		printDebug("printDomians() domain list exists");
+		$domains = file_get_contents("domainlist.txt");
+		$domains = explode("\n", $domains);
+	} else {
+		return;
+	}
+
+	echo "$msg";
+	foreach ($domains as $domain) {
+		echo '<a href="https://' . $domain . '/' . '">' . $domain . "</a> ";
+	}
+	echo "\n";
+}
+
 function printCoreOut($text) {
 	debugMethodName();
 
@@ -710,7 +726,8 @@ table {
 </style>
 <body>
 <center>
-<?php printLinksLangs(); ?>
+<?php printLinksLangs(); ?><br>
+<?php printDomains("mirrors: ") ?><br>
 <a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
 <p><?php printLinkTop(); ?><br><br>
 <?php printBlog(True); ?>
