@@ -1,5 +1,7 @@
 ===== picosite reference =====
 
+[This documentation is a work in progress and is not complete]
+
 Principles:
 
 * Extremely simple managment where an unstable branch is merged into a
