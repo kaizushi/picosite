@@ -31,3 +31,13 @@ The 19th of November 2019:
 	* We have added template.php and changed page.php, so that if the template
 	  exists, the inbuilt template is disabled. Keep in mind the promise and
 	  principle that page.php works solo.
+	* The logo image can be clicked on taking one back to the main page for a
+	  particular language, if one is selected.
+The 23rd of November 2019:
+	* It now does not show anything in menus and such, when a translation for
+	  a file does not exist.
+	* Some changes to the template so it includes a call to print a domains
+	  list after languages.
+The 28th of November 2019:
+	* The domains method was writing HTTPS in its link, now it is just HTTP
+	  which should be fine if there is a redirect to HTTPS.
