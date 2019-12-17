@@ -25,6 +25,11 @@ function debugMethodName(){
 	print_r($last_call);
 }
 
+function getBool($val) {
+	if ($val) return "true";
+	else return "false";
+}
+
 function printDebug($msg) {
 	if (DEBUGOUT) {
 		echo "picosite DEBUG: " . $msg . "\n";
@@ -137,7 +142,7 @@ function getPageTitles($files, $subpage = "[NONE]") {
 
 	foreach ($files as $file) {
 		$hastitle = false;
-		$ispub = false;
+		$ispub = true;
 
 		$filesplit = explode(".", $file);
 		$node = $filesplit[0];
@@ -153,19 +158,15 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		}
 
 		$page = file_get_contents($file);
-		$pagemod = filemtime($file);
 		$lines = explode("\n", $page);
 		#find if page requires publish picocode
-		if ($pagemod < $GLOBALS['PUBLISH_AGE']) {
-			$ispub = true;
-		} else {
-			#find if page is published
-			foreach ($lines as $line) {
-				if (transStart($line, "%%##publish")) {
-					$ispub = true;
-				}
+
+		foreach ($lines as $line) {
+			if (transStart($line, "%%##holdpub")) {
+				$ispub = false;
 			}
 		}
+	
 
 		#find the page title
 		foreach ($lines as $line) {
@@ -177,6 +178,7 @@ function getPageTitles($files, $subpage = "[NONE]") {
 			}
 		}
 
+		printDebug("getPageTitles(): \$ispub = " . getBool($ispub));
 		if (!$hastitle) $titledRefs[$node] = "Untitled Page";
 		if (!$ispub) $titledRefs[$node] = "%%HIDE%%";
 	}
@@ -302,14 +304,7 @@ function printDomains($msg) {
 }
 
 function printCoreOut($text) {
-	global $HIDEPAGE;
 	debugMethodName();
-
-	if ($HIDEPAGE) {
-		http_response_code(404);
-		echo "<p>The following page is hidden from view.";
-		return;
-	}
 
 	if (is_string($text)) {
 		if (preg_match('/\n/', $text)) {
@@ -439,7 +434,6 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		foreach ($blogs as $time => $blog) {
 			$time = $time - $x;
 			$x++;
-			echo '<tr><td>' . date("G:i:s d/m/Y", $time) . '</td>';
 			$thetitle = "Untitled Blog";
 			$thenode = "";
 			foreach ($titled as $node => $title) {
@@ -452,12 +446,14 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 			if ($thetitle === "%%HIDE%%") {
 				continue;
 			}
+
+			echo '<tr><td>' . date("G:i:s d/m/Y", $time) . '</td>';
 			
 			if ($justone) echo "<p>Latest blog post...</p>";
 
 			if (($x - $start) >= 0) {
 				echo '<td><a href="/page.php?q=' . $_GET['q'] . '&b='
-					. $thenode . $getlang . '">' . $thetitle . "</a></td>\n";
+					. $thenode . $getlang . '">' . $thetitle . "</a></td></tr>\n";
 			}
 
 			if (($x - $start) == $amount) break;
@@ -476,6 +472,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		}
 
 		$lines = explode("\n", $file);
+
 		printCoreOut($lines);
 	}
 }
@@ -564,7 +561,7 @@ function printSubpage($groupname) {
 	
 		echo "<ul>";
 		foreach($titled as $node => $title) {
-			if ($titled === "%%HIDE%%") continue;
+			if ($title === "%%HIDE%%") continue;
 			if ($title === "Missing File") continue;
 			echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . $getlang .  '">' . $title . "</a></li>\n";
 		}
@@ -585,6 +582,15 @@ function printSubpage($groupname) {
 }
 
 function printFile($file) {
+	global $HIDEPAGE;
+	
+	if ($HIDEPAGE) {
+		echo "The following page is currently hidden from view, and is probably
+			a work in progress.";
+		http_response_code(404);
+		return;
+	}
+
 	if (file_exists($file)) {
 		debugMethodName();
 		$content = file_get_contents($file);
@@ -669,6 +675,7 @@ function printLinkTop() {
 	echo "<br>";
 
 	foreach ($links as $node => $title) {
+		if ($title === "%%HIDE%%") continue;
 		if (($node === "") || ($node == null)) {
 			continue;
 		}
@@ -714,7 +721,6 @@ function getPageTitle($pagefile) {
 		$title = "Page not found";
 	} else {
 		$page = file_get_contents($pagefile);
-		$pagem = filemtime($pagefile);
 		$lines = explode("\n", $page);
 
 		foreach ($lines as $line) {
@@ -724,14 +730,13 @@ function getPageTitle($pagefile) {
 			}
 		}
 
-		$hide = true;
-
-		if ($pagem < $GLOBALS['PUBLISH_AGE']) $hide = false;
+		$hide = false;
 
 		foreach ($lines as $line) {
-			if (transStart($line, "%%##publish")) $hide = false;
+			if (transStart($line, "%%##holdpub")) $hide = true;
 		}
 
+		printDebug("getPageTitles(): \$hide = " . getBool($hide));
 		if ($hide) $title = "%%HIDE%%";
 	}
 
@@ -744,7 +749,7 @@ function printTitle() {
 	$pagetitle = getPageTitle($pagefile);
 	if ($pagetitle === "%%HIDE%%") {
 		$HIDEPAGE = true;
-		$pagetitle = "Hidden Page";
+		$pagetitle = "404: Hidden Page";
 	}
 	echo $pagetitle;
 }

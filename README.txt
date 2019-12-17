@@ -28,6 +28,8 @@ what is here are not-existent.
 	and it is very easy.
 * Pages, as such pages just sit in the same file as page.php which is the
 	brains of picosite. 
+* Hold Publication, where one can disclude a page from being displayed,
+	especially when it is being worked on.
 * Intentional Redundant Code, at the bottom of page.php is the same code as
 	template.php but if you have the template it is ignored. This allows
 	you to go without it and do things simple. If you want your own nice
@@ -245,6 +247,20 @@ page.
 
 Pages on picosite can contain HTML but cannot use PHP. A coming feature
 is being able to use BBCode to make it user friendly. 
+
+= Hold Publication =
+
+When you are working on a page, any kind of page at all one can use a
+picocode to hold the publication of it. This is useful when working on
+a post or page that is not finished.
+
+This feature prevents a page from being displayed and has it display a
+404 error that a page is hidden. When your page is ready just delete
+the picocode that hides the page, and it will display.
+
+%%##holdpub
+
+It is a very simple thing to do when working on a site or new page.
 
 = Create more pages =
 
