@@ -161,10 +161,11 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		} else {
 			#find if page is published
 			foreach ($lines as $line) {
-				if (transStart($line, "%%##published")) {
+				if (transStart($line, "%%##publish")) {
 					$ispub = true;
 				}
 			}
+		}
 
 		#find the page title
 		foreach ($lines as $line) {
