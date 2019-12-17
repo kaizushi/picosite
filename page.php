@@ -2,14 +2,31 @@
 
 // picosite is almost a CMS, its a light way to have a site.
 
-define("SOFTNAME", "picosite 1.1.3");
+// DO NOT CHANGE THIS FILE OR YOU WILL BREAK UPDATES.
 
-define("DEBUGOUT", false);
-define("TRACEOFF", true); 
-define("ALWAYSTRACE", false);
+//default settings
 
-if (file_exists("config.php")) include_once("config.php");
+$_config_softname = "picosite 1.1.3";
+$_config_debugout = false;
+$_config_traceoff = true;
+$_config_sitename = "A New Picosite";
+$_config_sitelogo = "sitelogo.png";
+$_config_suteauth = "Anonymous";
+$_config_currsymb = "$";
+
+// You can change any of these settings by creating a settings.php
+// and declaring the variables there.
+
+if (file_exists("settings.php")) include_once("settings.php");
 if (file_exists("parser.php")) include_once("parser.php");
+
+define("SOFTNAME", $_config_softname);
+define("DEBUGOUT", $_config_debugout);
+define("TRACEOFF", $_config_traceoff);
+define("SITENAME", $_config_sitename);
+define("SITELOGO", $_config_sitelogo);
+define("SITEAUTHOR", $_config_siteauth);
+define("CURRENCY_SYM", $_config_currsymb);
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
