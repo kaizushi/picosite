@@ -41,3 +41,6 @@ The 23rd of November 2019:
 The 28th of November 2019:
 	* The domains method was writing HTTPS in its link, now it is just HTTP
 	  which should be fine if there is a redirect to HTTPS.
+The 17th of December 2019:
+	* Now one can use a new picocode '%%##holdpub' to prevent a page from
+	  showing in menus, lists, and from displaying its content.

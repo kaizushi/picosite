@@ -2,16 +2,36 @@
 
 // picosite is almost a CMS, its a light way to have a site.
 
-define("SOFTNAME", "picosite 1.1.3");
+// DO NOT CHANGE THIS FILE OR YOU WILL BREAK UPDATES.
 
-define("DEBUGOUT", false);
-define("TRACEOFF", true); 
-define("ALWAYSTRACE", false);
+//default settings
 
-if (file_exists("config.php")) include_once("config.php");
+$_config_softname = "picosite 1.2.0";
+$_config_debugout = false;
+$_config_traceoff = true;
+$_config_sitename = "A New Picosite";
+$_config_sitelogo = "sitelogo.png";
+$_config_suteauth = "Anonymous";
+$_config_currsymb = "$";
+
+// You can change any of these settings by creating a settings.php
+// and declaring the variables there.
+
+if (file_exists("settings.php")) include_once("settings.php");
 if (file_exists("parser.php")) include_once("parser.php");
 
+define("SOFTNAME", $_config_softname);
+define("DEBUGOUT", $_config_debugout);
+define("TRACEOFF", $_config_traceoff);
+define("SITENAME", $_config_sitename);
+define("SITELOGO", $_config_sitelogo);
+define("SITEAUTHOR", $_config_siteauth);
+define("CURRENCY_SYM", $_config_currsymb);
+
 if (isset($argv[1])) $_GET["q"] = $argv[1];
+
+global $HIDEPAGE;
+$HIDEPAGE = false;
 
 function debugMethodName(){
 	if (TRACEOFF) return;
@@ -20,6 +40,11 @@ function debugMethodName(){
 	//position 0 would be the line that called this function so we ignore it
 	$last_call = $trace[1];
 	print_r($last_call);
+}
+
+function getBool($val) {
+	if ($val) return "true";
+	else return "false";
 }
 
 function printDebug($msg) {
@@ -133,8 +158,8 @@ function getPageTitles($files, $subpage = "[NONE]") {
 	$titledRefs = [];
 
 	foreach ($files as $file) {
-		
 		$hastitle = false;
+		$ispub = true;
 
 		$filesplit = explode(".", $file);
 		$node = $filesplit[0];
@@ -151,8 +176,16 @@ function getPageTitles($files, $subpage = "[NONE]") {
 
 		$page = file_get_contents($file);
 		$lines = explode("\n", $page);
+		#find if page requires publish picocode
 
+		foreach ($lines as $line) {
+			if (transStart($line, "%%##holdpub")) {
+				$ispub = false;
+			}
+		}
+	
 
+		#find the page title
 		foreach ($lines as $line) {
 			if (transStart($line, "%%##title=")) {
 				$sides = explode("=", $line);
@@ -162,7 +195,9 @@ function getPageTitles($files, $subpage = "[NONE]") {
 			}
 		}
 
+		printDebug("getPageTitles(): \$ispub = " . getBool($ispub));
 		if (!$hastitle) $titledRefs[$node] = "Untitled Page";
+		if (!$ispub) $titledRefs[$node] = "%%HIDE%%";
 	}
 
 	return $titledRefs;
@@ -416,7 +451,6 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		foreach ($blogs as $time => $blog) {
 			$time = $time - $x;
 			$x++;
-			echo '<tr><td>' . date("G:i:s d/m/Y", $time) . '</td>';
 			$thetitle = "Untitled Blog";
 			$thenode = "";
 			foreach ($titled as $node => $title) {
@@ -425,12 +459,18 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 					$thenode = $node;
 				}
 			}
+
+			if ($thetitle === "%%HIDE%%") {
+				continue;
+			}
+
+			echo '<tr><td>' . date("G:i:s d/m/Y", $time) . '</td>';
 			
 			if ($justone) echo "<p>Latest blog post...</p>";
 
 			if (($x - $start) >= 0) {
 				echo '<td><a href="/page.php?q=' . $_GET['q'] . '&b='
-					. $thenode . $getlang . '">' . $thetitle . "</a></td>\n";
+					. $thenode . $getlang . '">' . $thetitle . "</a></td></tr>\n";
 			}
 
 			if (($x - $start) == $amount) break;
@@ -449,6 +489,7 @@ function printBlog($justone = False, $amount = 0, $start = 0) {
 		}
 
 		$lines = explode("\n", $file);
+
 		printCoreOut($lines);
 	}
 }
@@ -481,6 +522,7 @@ function printGuide() {
 		$titled = getPageTitles($guides);
 
 		foreach ($titled as $node => $title) {
+			if ($titled === "%%HIDE%%") continue;
 			if (is_null($_GET['l'])) {
 				echo '<li><a href="/page.php?q=' . $_GET['q'] . '&g=' . $node . '">' . $title . "</a></li>";
 			} else {
@@ -536,6 +578,7 @@ function printSubpage($groupname) {
 	
 		echo "<ul>";
 		foreach($titled as $node => $title) {
+			if ($title === "%%HIDE%%") continue;
 			if ($title === "Missing File") continue;
 			echo '<li><a href="/page.php?q=' . $_GET['q'] . '&sp=' . $node . $getlang .  '">' . $title . "</a></li>\n";
 		}
@@ -556,6 +599,15 @@ function printSubpage($groupname) {
 }
 
 function printFile($file) {
+	global $HIDEPAGE;
+	
+	if ($HIDEPAGE) {
+		echo "The following page is currently hidden from view, and is probably
+			a work in progress.";
+		http_response_code(404);
+		return;
+	}
+
 	if (file_exists($file)) {
 		debugMethodName();
 		$content = file_get_contents($file);
@@ -590,7 +642,6 @@ function printFile($file) {
 						printItemListing();
 					}
 				}
-						
 			}
 		}
 	} else {
@@ -601,6 +652,7 @@ function printFile($file) {
 
 function printPageBody() {
 	$pagefile = getPageFile();
+		
 	printFile($pagefile);
 }
 
@@ -617,6 +669,8 @@ function printLinkTop() {
 	$file = file_get_contents("menulayout.txt");
 	$layout = explode("\n", $file);
 
+	$newlinks = [];
+
 	foreach ($layout as $node) {
 		if (($links[$node] === "") || ($links[$node] == null)) {
 			continue;
@@ -626,6 +680,7 @@ function printLinkTop() {
 	}
 
 	foreach ($ordered as $node => $title) {
+		if ($title === "%%HIDE%%") continue;
 		if (is_null($_GET['l'])) {
 			echo "<a href=\"/page.php?q=$node\">$title</a> ";
 		} else {
@@ -637,6 +692,7 @@ function printLinkTop() {
 	echo "<br>";
 
 	foreach ($links as $node => $title) {
+		if ($title === "%%HIDE%%") continue;
 		if (($node === "") || ($node == null)) {
 			continue;
 		}
@@ -685,19 +741,33 @@ function getPageTitle($pagefile) {
 		$lines = explode("\n", $page);
 
 		foreach ($lines as $line) {
-			if (substr($line, 0, 10) === "%%##title=") {
+			if (transStart($line, "%%##title=")) {
 				$sides = explode("=", $line);
 				$title = $sides[1];
 			}
 		}
+
+		$hide = false;
+
+		foreach ($lines as $line) {
+			if (transStart($line, "%%##holdpub")) $hide = true;
+		}
+
+		printDebug("getPageTitles(): \$hide = " . getBool($hide));
+		if ($hide) $title = "%%HIDE%%";
 	}
 
 	return $title;
 }
 
 function printTitle() {
+	global $HIDEPAGE;
 	$pagefile = getPageFile();
 	$pagetitle = getPageTitle($pagefile);
+	if ($pagetitle === "%%HIDE%%") {
+		$HIDEPAGE = true;
+		$pagetitle = "404: Hidden Page";
+	}
 	echo $pagetitle;
 }
 
