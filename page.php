@@ -11,7 +11,7 @@ $_config_debugout = false;
 $_config_traceoff = true;
 $_config_sitename = "A New Picosite";
 $_config_sitelogo = "sitelogo.png";
-$_config_suteauth = "Anonymous";
+$_config_siteauth = "Anonymous";
 $_config_currsymb = "$";
 
 // You can change any of these settings by creating a settings.php

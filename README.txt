@@ -215,16 +215,33 @@ anyway to delete getprices.php. They could instead upload files to set
 the price manually for their site. One could even have a script with a
 SFTP or FTP and upload the price from another box to basic hosting.
 
-= Set the Site Name and Logo =
+= Write your settings.php =
 
-There are some config settings at the top of page.php which control
-the site. One is for the site name and you can also set others. You
-might also want to change the logo graphic. 
+The site comes with working default settings which are preset, and
+these can be overridden by creating a settings.php for your site. In
+that file you can specify your name, your site name, and other things
+such as the currency symbol used on the site.
 
-There is also a image of my mascot Rainbow Dash in the corner, when you
-get to the end it tells you how to change the CSS. It is very easy to
-remove and you could just delete the file. However then your webserver
-will get a 404 for every request.
+These are the typical settings:
+$_config_sitename:	The name displayed in the browser title.
+$_config_sitelogo:	The filename of the site logo image you use.
+$_config_siteauth:	The name of the author of the website.
+$_config_currsymb:	The currency symbol for the master currency.
+
+Your settings.php is a PHP file and requires the start of the file
+to read as:
+
+<?php
+
+And the end of the file to read as this:
+
+?>
+
+Within those lines you define settings, for example to set the name:
+
+$_config_sitename = "My Vendor Shop";
+
+Be sure to include that semicolon at the end of each setting.
 
 = Change the Main Page =
 
