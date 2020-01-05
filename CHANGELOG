@@ -44,3 +44,6 @@ The 28th of November 2019:
 The 17th of December 2019:
 	* Now one can use a new picocode '%%##holdpub' to prevent a page from
 	  showing in menus, lists, and from displaying its content.
+The 5th of January 2020:
+	* I have introduced a new feature where one can have settings of where
+	  the currency data is kept.

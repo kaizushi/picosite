@@ -13,12 +13,17 @@ $_config_sitename = "A New Picosite";
 $_config_sitelogo = "sitelogo.png";
 $_config_suteauth = "Anonymous";
 $_config_currsymb = "$";
+$_config_currdata = "%%NODATA%%"; //This should be %%NODATA%% unless you have setup your
+				  //getprices.php script and made a directory.
 
 // You can change any of these settings by creating a settings.php
-// and declaring the variables there.
+// and declaring the variables there. If you change this, keep in
+// mind future versions will overwrite.
 
 if (file_exists("settings.php")) include_once("settings.php");
 if (file_exists("parser.php")) include_once("parser.php");
+
+printDebug("The currency data dir is $_config_currdata");
 
 define("SOFTNAME", $_config_softname);
 define("DEBUGOUT", $_config_debugout);
@@ -27,6 +32,9 @@ define("SITENAME", $_config_sitename);
 define("SITELOGO", $_config_sitelogo);
 define("SITEAUTHOR", $_config_siteauth);
 define("CURRENCY_SYM", $_config_currsymb);
+define("CURRENCY_DAT", $_config_currdata);
+
+printDebug("The global for currency is " . CURRENCY_DAT);
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
@@ -204,11 +212,17 @@ function getPageTitles($files, $subpage = "[NONE]") {
 }
 
 function getPriceBitcoin() {
-	return (float) file_get_contents("data/btc-price");
+	$datadir = CURRENCY_DAT;
+
+	if (!transEnd($datadir,"/")) $datadir = $datadir . "/";
+	return (float) file_get_contents($datadir . "btc-price");
 }
 
 function getPriceMonero() {
-	return (float) file_get_contents("data/xmr-price");
+	$datadir = CURRENCY_DAT;
+
+        if (!transEnd($datadir,"/")) $datadir = $datadir . "/";
+	return (float) file_get_contents($datadir . "xmr-price");
 }
 
 function getItemList() {
@@ -361,6 +375,15 @@ function printPrice($itemname, $usdprice, $oldprice) {
 }
 
 function printItemListing() {
+	if (CURRENCY_DAT === "%%NODATA%%") {
+		echo "Error: no currency data directory is configured.";
+		return;
+	}
+
+	$datadir = CURRENCY_DAT;
+        if (!transEnd($datadir,'/')) $datadir = $datadir . "/";
+	printDebug("printItemListing: the datadir is $datadir");
+
 	$oldmode = true;
 	if (!file_exists("itemlist.txt")) {
 		http_response_code(404);
@@ -369,8 +392,8 @@ function printItemListing() {
 	}
 	$items = getItemList();
 	$olditems = getItemListOld();
-	$timebtc = filemtime("data/btc-price");
-	$timexmr = filectime("data/xmr-price");
+	$timebtc = filemtime("$datadir/btc-price");
+	$timexmr = filectime("$datadir/xmr-price");
 
 	if ($olditems['NOFILE'] === true) {
 		$oldmode = false;
@@ -639,6 +662,7 @@ function printFile($file) {
 				}
 				if (transStart($line, "%%##price")) {
 					if (transStart($line, "%%##price=all")) {
+						printDebug("printFile: we are calling printItemList()");
 						printItemListing();
 					}
 				}
