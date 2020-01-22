@@ -12,6 +12,9 @@ $_config_traceoff = true;
 $_config_sitename = "A New Picosite";
 $_config_sitelogo = "sitelogo.png";
 $_config_suteauth = "Anonymous";
+$_config_menuleft = "";
+$_config_menumidd = " ";
+$_config_menurght = "";
 $_config_currsymb = "$";
 $_config_currdata = "%%NODATA%%"; //This should be %%NODATA%% unless you have setup your
 				  //getprices.php script and made a directory.
@@ -33,6 +36,9 @@ define("SITELOGO", $_config_sitelogo);
 define("SITEAUTHOR", $_config_siteauth);
 define("CURRENCY_SYM", $_config_currsymb);
 define("CURRENCY_DAT", $_config_currdata);
+define("MENULINK_LFT", $_config_menuleft);
+define("MENULINK_MID", $_config_menumidd);
+define("MENULINK_RGT", $_config_menurght);
 
 printDebug("The global for currency is " . CURRENCY_DAT);
 
@@ -703,23 +709,33 @@ function printLinkTop() {
 		unset($links[$node]);
 	}
 
+	echo MENULINK_LFT;
+
+	$donefirst = false;
 	foreach ($ordered as $node => $title) {
 		if ($title === "%%HIDE%%") continue;
+
+		if ($donefirst) { echo MENULINK_MID; }
+
 		if (is_null($_GET['l'])) {
-			echo "<a href=\"/page.php?q=$node\">$title</a> ";
+			echo"<a href=\"/page.php?q=$node\">$title</a> ";
 		} else {
 			$lang = $_GET['l'];
 			echo "<a href=\"/page.php?q=$node&l=$lang\">$title</a> ";	
 		}
 	}
+	echo MENULINK_RGT . "<br>\n";
 
-	echo "<br>";
-
+	echo MENULINK_LFT;
+	$donefirst = false;
 	foreach ($links as $node => $title) {
 		if ($title === "%%HIDE%%") continue;
 		if (($node === "") || ($node == null)) {
 			continue;
 		}
+
+		if ($donefirst) { echo MENULINK_MID; }
+
 		if (is_null($_GET['l'])) {
 			echo "<a href=\"/page.php?q=$node\">$title</a> ";
 		} else {
@@ -727,6 +743,7 @@ function printLinkTop() {
 			echo "<a href=\"/page.php?q=$node&l=$lang\">$title</a> ";
 		}
 	}
+	echo MENULINK_RGT;
 }
 
 function printLinksLangs() {
