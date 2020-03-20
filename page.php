@@ -40,8 +40,6 @@ define("MENULINK_LFT", $_config_menuleft);
 define("MENULINK_MID", $_config_menumidd);
 define("MENULINK_RGT", $_config_menurght);
 
-printDebug("The global for currency is " . CURRENCY_DAT);
-
 $_GET = array_map('htmlspecialchars', $_GET);
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
@@ -856,7 +854,7 @@ table {
 <center>
 <?php printLinksLangs(); ?><br>
 <?php printDomains("mirrors: ") ?><br>
-<a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
+<a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img></a>
 <p><?php printLinkTop(); ?><br><br>
 <?php printBlog(True); ?>
 <br><br><br>
