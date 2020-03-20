@@ -713,6 +713,9 @@ function printLinkTop() {
 
 	$donefirst = false;
 	foreach ($ordered as $node => $title) {
+		$node = htmlspecialchars($node);
+		$title = htmlspecialchars($node);
+	
 		if ($title === "%%HIDE%%") continue;
 
 		if ($donefirst) { echo MENULINK_MID; }
