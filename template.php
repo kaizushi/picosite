@@ -19,7 +19,7 @@ table {
 <center>
 <?php printLinksLangs(); ?><br>
 <?php printDomains("mirrors: ") ?><br>
-<a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img>
+<a href="<?php echo getLinkMain(); ?>"><img src="<?php echo SITELOGO; ?>" alt="Site logo image"></img></a>
 <p><?php printLinkTop(); ?><br><br>
 <?php printBlog(True); ?>
 <br><br><br>
