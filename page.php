@@ -376,7 +376,7 @@ function printPrice($itemname, $usdprice, $oldprice) {
 	$sym = CURRENCY_SYM;
 
 	if ($oldmode) {
-		echo "<tr><td width=\"50%\">$itemname</td><td>$sym<strike>$oldprice</strike></td><td>\$$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
+		echo "<tr><td width=\"50%\">$itemname</td><td>$sym<strike>$oldprice</strike></td><td>$sym$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
 	} else { 
 		echo "<tr><td width=\"50%\">$itemname</td><td>$sym$usdprice</td><td>BTC: $btcp</td><td>XMR: $xmrp</td></tr>\n";
 	}
