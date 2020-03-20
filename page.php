@@ -703,6 +703,8 @@ function printLinkTop() {
 
 	$newlinks = [];
 
+	$rend = true;
+
 	foreach ($layout as $node) {
 		if (($links[$node] === "") || ($links[$node] == null)) {
 			continue;
@@ -711,42 +713,51 @@ function printLinkTop() {
 		unset($links[$node]);
 	}
 
-	echo MENULINK_LFT;
+	if (count($layout) == 0) $rend = false;
 
-	$donefirst = false;
+	$iters = count($ordered);
+	$incr = 1;
+	if ($rend) echo MENULINK_LFT;
 	foreach ($ordered as $node => $title) {
-		$node = htmlspecialchars($node);
-		$title = htmlspecialchars($node);
-	
+		if (!$rend) break;
+
 		if ($title === "%%HIDE%%") continue;
 
-		if ($donefirst) { echo MENULINK_MID; }
-
 		if (is_null($_GET['l'])) {
-			echo"<a href=\"/page.php?q=$node\">$title</a> ";
+			echo"<a href=\"/page.php?q=$node\">$title</a>";
 		} else {
 			$lang = $_GET['l'];
-			echo "<a href=\"/page.php?q=$node&l=$lang\">$title</a> ";	
+			echo "<a href=\"/page.php?q=$node&l=$lang\">$title</a>";
 		}
+
+		if ($incr == $iters) break;
+		$incr = $incr + 1;
+
+		echo MENULINK_MID;
 	}
-	echo MENULINK_RGT . "<br>\n";
+	if ($rend) echo MENULINK_RGT . "<br>\n";
+
+	$iters=count($links);
+	$incr=1;
 
 	echo MENULINK_LFT;
-	$donefirst = false;
 	foreach ($links as $node => $title) {
 		if ($title === "%%HIDE%%") continue;
 		if (($node === "") || ($node == null)) {
 			continue;
 		}
 
-		if ($donefirst) { echo MENULINK_MID; }
-
 		if (is_null($_GET['l'])) {
-			echo "<a href=\"/page.php?q=$node\">$title</a> ";
+			echo "<a href=\"/page.php?q=$node\">$title</a>";
 		} else {
 			$lang = $_GET['l'];
-			echo "<a href=\"/page.php?q=$node&l=$lang\">$title</a> ";
+			echo "<a href=\"/page.php?q=$node&l=$lang\">$title</a>";
 		}
+
+		if ($incr == $iters) break;
+		$incr = $incr + 1;
+
+		echo MENULINK_MID;
 	}
 	echo MENULINK_RGT;
 }
