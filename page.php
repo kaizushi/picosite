@@ -42,6 +42,8 @@ define("MENULINK_RGT", $_config_menurght);
 
 printDebug("The global for currency is " . CURRENCY_DAT);
 
+$_GET = array_map('htmlspecialchars', $_GET);
+
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
 global $HIDEPAGE;
