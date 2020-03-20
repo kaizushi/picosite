@@ -1,6 +1,0 @@
-%%##title=Blog
-<p>This is the blog for the picosite project.
-<p><em>Since the project is new not much will happen here. <a href="/page.php?q=contribute">Contribute</a> and something will.</em>
-%%##blogs
-<hl>
-<p>If you wish to contribute to the blog and have contributed please mail it to <a href="/page.php?q=contact">kaizushi</a> or send a push request correctly for the 'demosite' branch on Github. If you contributed you know how!
