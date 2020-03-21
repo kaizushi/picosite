@@ -6,7 +6,7 @@
 
 //default settings
 
-$_config_softname = "picosite 1.2.0";
+$_config_softname = "picosite 1.2.1";
 $_config_debugout = false;
 $_config_traceoff = true;
 $_config_sitename = "A New Picosite";
@@ -26,8 +26,6 @@ $_config_currdata = "%%NODATA%%"; //This should be %%NODATA%% unless you have se
 if (file_exists("settings.php")) include_once("settings.php");
 if (file_exists("parser.php")) include_once("parser.php");
 
-printDebug("The currency data dir is $_config_currdata");
-
 define("SOFTNAME", $_config_softname);
 define("DEBUGOUT", $_config_debugout);
 define("TRACEOFF", $_config_traceoff);
@@ -40,7 +38,7 @@ define("MENULINK_LFT", $_config_menuleft);
 define("MENULINK_MID", $_config_menumidd);
 define("MENULINK_RGT", $_config_menurght);
 
-$_GET = array_map('htmlspecialchars', $_GET);
+$_GET = array_map('strip_tags', $_GET);
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
@@ -382,7 +380,6 @@ function printPrice($itemname, $usdprice, $oldprice) {
 
 function printItemListing() {
 	if (CURRENCY_DAT === "%%NODATA%%") {
-		echo "Error: no currency data directory is configured.";
 		return;
 	}
 
