@@ -403,8 +403,10 @@ function printItemListing() {
 		unset($olditems["NOFILE"]);
 	}
 
-	echo "<p><strong>BTC " . date("G:i:s d/m/Y", $timebtc) . ": $" . getPriceBitcoin() . "<br>\n";
-	echo "XMR " . date("G:i:s d/m/Y", $timexmr) . ": $" . getPriceMonero() . "</strong>\n";
+	$sym = CURRENCY_SYM;
+
+	echo "<p><strong>BTC " . date("G:i:s d/m/Y", $timebtc) . ": $sym" . getPriceBitcoin() . "<br>\n";
+	echo "XMR " . date("G:i:s d/m/Y", $timexmr) . ": $sym" . getPriceMonero() . "</strong>\n";
 	echo "<table>\n";
 
 	if ($oldmode) {
