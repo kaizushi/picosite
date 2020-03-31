@@ -278,6 +278,10 @@ the picocode that hides the page, and it will display.
 %%##holdpub
 
 It is a very simple thing to do when working on a site or new page.
+One can also set the settings.php variable $_config_hidecode and then
+view hidden pages by adding '&code=CODE' to the URL, where CODE is the
+code specified in your settings. This can be useful for previewing
+content before publication.
 
 = Create more pages =
 
