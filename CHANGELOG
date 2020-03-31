@@ -47,3 +47,6 @@ The 17th of December 2019:
 The 5th of January 2020:
 	* I have introduced a new feature where one can have settings of where
 	  the currency data is kept.
+The 31st of March 2020:
+	* One can now set a 'pagecode' which can be passed through the URL as
+	  GET value 'code' and view pages hidden with the 'holdpub' picocode.

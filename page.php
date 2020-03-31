@@ -12,6 +12,7 @@ $_config_traceoff = true;
 $_config_sitename = "A New Picosite";
 $_config_sitelogo = "sitelogo.png";
 $_config_suteauth = "Anonymous";
+$_config_hidecode = "%%NOCODE%%";
 $_config_menuleft = "";
 $_config_menumidd = " ";
 $_config_menurght = "";
@@ -32,6 +33,7 @@ define("TRACEOFF", $_config_traceoff);
 define("SITENAME", $_config_sitename);
 define("SITELOGO", $_config_sitelogo);
 define("SITEAUTHOR", $_config_siteauth);
+define("PUBCODE", $_config_hidecode);
 define("CURRENCY_SYM", $_config_currsymb);
 define("CURRENCY_DAT", $_config_currdata);
 define("MENULINK_LFT", $_config_menuleft);
@@ -193,6 +195,7 @@ function getPageTitles($files, $subpage = "[NONE]") {
 		foreach ($lines as $line) {
 			if (transStart($line, "%%##holdpub")) {
 				$ispub = false;
+				if ($_GET['code'] === PUBCODE && PUBCODE !== "%%NOCODE%%") $ispub = true;
 			}
 		}
 	
@@ -804,10 +807,12 @@ function getPageTitle($pagefile) {
 		$hide = false;
 
 		foreach ($lines as $line) {
-			if (transStart($line, "%%##holdpub")) $hide = true;
+			if (transStart($line, "%%##holdpub")) {
+				$hide = true;
+				if ($_GET['code'] === PUBCODE && PUBCODE !== "%%NOCODE%%") $hide = false;
+			}
 		}
 
-		printDebug("getPageTitles(): \$hide = " . getBool($hide));
 		if ($hide) $title = "%%HIDE%%";
 	}
 
