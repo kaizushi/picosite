@@ -6,7 +6,7 @@
 
 //default settings
 
-$_config_softname = "picosite 1.2.2";
+$_config_softname = "picosite 1.2.3";
 $_config_debugout = false;
 $_config_traceoff = true;
 $_config_sitename = "A New Picosite";

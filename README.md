@@ -1,6 +1,6 @@
 # picosite
 ## Current Version
-The current version is 1.2.0 and it was released on the 23rd of November 2019, twice, because of bugs pushed to master. All is well now!
+The current version is 1.2.3 and it was released on the 31st of March 2020. I seem to have forgotten to update this for the past 3 releases.
 
 ## Introduction
 A secure CMS / site generator, which only knows how to read files you create. It has no code that can write to the system. It just checks for files. To see it in action check out the [picosite](https://picosite.kloshost.online) website which uses most features, and you can see the source of this site in the 'demosite' branch.
