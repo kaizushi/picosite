@@ -27,7 +27,7 @@ function checkURL($url) {
 	return filter_var($url, FILTER_VALIDATE_URL);
 }
 
-function checkServices($services) {
+function checkServices($services, $base = "") {
 	$online = [];
 	$elsewhere = [];
 	foreach ($services as $svc) {
@@ -38,7 +38,8 @@ function checkServices($services) {
 		curl_setopt($curl, CURLOPT_TIMEOUT,10);
 		$output = curl_exec($curl);
 		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		if ($httpcode === 200 || $httpcode === 302) array_push($online, $svc);
+		if ($httpcode === 200 || $httpcode === 302) {
+			array_push($online, "$svc|$base");
 		if ($httpcode === 301) {
 			$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 			$headers = substr($output, 0, $header_size);
@@ -49,13 +50,12 @@ function checkServices($services) {
 					$url = trim($headparts[1] . ":" . $headparts[2]);
 					if (!checkURL($url)) continue;
 					array_push($elsewhere, $url);
+					array_merge($online, checkServices($elsewhere, $url));
 				}
 			}
 		}
 	}
 	
-	if (!empty($elsewhere)) array_merge($online, checkServices($elsewhere));
-
 	return array_unique($online);
 }
 

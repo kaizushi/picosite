@@ -336,7 +336,7 @@ function getPageFile($subpagedir = "[NONE]") {
 	return $fn;
 }
 
-function printServices() 
+function printServices() {
 	$showinfo = true;
 
 	if (!file_exists(SERVLIST_LIST)) return;
@@ -348,7 +348,7 @@ function printServices()
 
 	$newest = 0;
 	$selected = "";
-	for ($files as $file) {
+	foreach ($files as $file) {
 		$created = filectime($file);
 		if ($newest == 0) {
 			$newest = $created;
@@ -373,16 +373,16 @@ function printServices()
 		$infos = explode("\n", $infos);
 	}
 
-	for ($listed as $item) {
+	foreach ($listed as $item) {
 		echo "$item ";
 
 		$online = false;
-		for ($services as $svc) if ($svc === $item) $online = true;
+		foreach ($services as $svc) if ($svc === $item) $online = true;
 		if ($online) echo " (online)";
 		else echo " (offline)";
 
 		if ($showinfo) {
-			for ($showinfo as $info) {
+			foreach ($showinfo as $info) {
 				$info = explode("|", $info);
 				if ($info[0] === $item)	echo " - " . $info[1];
 			}
@@ -390,7 +390,6 @@ function printServices()
 
 		echo "<br>\n";
 	}
-
 }
 
 function printQuotes() {
@@ -751,6 +750,9 @@ function printFile($file) {
 				}
 				if (transStart($line, "%%##blogs")) {
 					printBlog();
+				}
+				if (transStart($line, "%%##services")) {
+					printServices();
 				}
 				if (transStart($line, "%%##price")) {
 					if (transStart($line, "%%##price=all")) {
