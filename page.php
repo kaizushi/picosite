@@ -291,6 +291,12 @@ function getPageFile($subpagedir = "[NONE]") {
 	$fn = "";
 	$inslang = "";
 
+	if (!is_null($_GET['q'])) $_GET['q'] = transFilesyms($_GET['q']);
+	if (!is_null($_GET['l'])) $_GET['l'] = transFilesyms($_GET['l']);
+	if (!is_null($_GET['g'])) $_GET['g'] = transFilesyms($_GET['s']);
+	if (!is_null($_GET['sp'])) $_GET['sp'] = transFilesyms($_GET['sp']);
+
+
 	if (is_null($_GET['q']) || $_GET['q'] === "") $_GET['q'] = 'main';
 
 	if (!is_null($_GET['l'])) $inslang = "." . $_GET['l'] . ".trans";
@@ -321,7 +327,7 @@ function getPageFile($subpagedir = "[NONE]") {
 		$fn = $subpagedir . "/" . $_GET['sp'] . $inslang . ".sub.page";
 	}
 	
-	return transFilesyms($fn);
+	return $fn;
 }
 
 function printQuotes() {
