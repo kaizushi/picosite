@@ -50,7 +50,7 @@ function checkServices($services, $base = "") {
 					$url = trim($headparts[1] . ":" . $headparts[2]);
 					if (!checkURL($url)) continue;
 					array_push($elsewhere, $url);
-					array_merge($online, checkServices($elsewhere, $url));
+					$online = array_merge($online, checkServices($elsewhere, $url));
 				}
 			}
 		}
