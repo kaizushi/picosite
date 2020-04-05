@@ -324,6 +324,17 @@ function getPageFile($subpagedir = "[NONE]") {
 	return $fn;
 }
 
+function printQuotes() {
+	if (!file_exits('quotes.txt')) {
+		echo SITENAME;
+		return;
+	}
+
+	quotes = get_file_contents('quotes.txt')
+
+	echo $quotes[rand(0, sizeof(quotes) -1];
+}
+
 function printDomains($msg) {
 	if (file_exists("domainlist.txt")) {
 		printDebug("printDomians() domain list exists");
