@@ -17,8 +17,11 @@ $_config_menuleft = "";
 $_config_menumidd = " ";
 $_config_menurght = "";
 $_config_currsymb = "$";
-$_config_currdata = "%%NODATA%%"; //This should be %%NODATA%% unless you have setup your
-				  //getprices.php script and made a directory.
+$_config_currdata = "%%NODATA%%"; 
+$_config_hc_srvclist = "servicelist.txt";
+$_config_hc_srvcdata = "data/";
+$_config_hc_srvcinfo = "serviceinfo.txt";
+
 
 // You can change any of these settings by creating a settings.php
 // and declaring the variables there. If you change this, keep in
@@ -39,6 +42,9 @@ define("CURRENCY_DAT", $_config_currdata);
 define("MENULINK_LFT", $_config_menuleft);
 define("MENULINK_MID", $_config_menumidd);
 define("MENULINK_RGT", $_config_menurght);
+define("SERVLIST_LIST", $_config_hc_srvclist);
+define("SERVLIST_DATA", $_config_hc_srvcdata);
+define("SERVLIST_INFO", $_config_hc_srvcinfo);
 
 $_GET = array_map('strip_tags', $_GET);
 
@@ -328,6 +334,63 @@ function getPageFile($subpagedir = "[NONE]") {
 	}
 	
 	return $fn;
+}
+
+function printServices() 
+	$showinfo = true;
+
+	if (!file_exists(SERVLIST_LIST)) return;
+
+	if (!file_exists(SERVLIST_INFO)) $showinfo = false;
+
+	$files = scandir(SERVLIST_DATA);
+	if (empty($files)) return;
+
+	$newest = 0;
+	$selected = "";
+	for ($files as $file) {
+		$created = filectime($file);
+		if ($newest == 0) {
+			$newest = $created;
+			$selected = $file;
+			continue;
+		}
+
+		if ($created > $newest) {
+			$newest = $created;
+			$selected = $file;
+		}
+	}
+
+	$services = file_get_contents($selected);
+	$services = explode("\n", $services);
+	
+	$listed = file_get_contents(SERVLIST_LIST);
+	$listed = explode("\n", $listed);
+
+	if ($showinfo) {
+		$infos = file_get_contents(SERVLIST_INFO);
+		$infos = explode("\n", $infos);
+	}
+
+	for ($listed as $item) {
+		echo "$item ";
+
+		$online = false;
+		for ($services as $svc) if ($svc === $item) $online = true;
+		if ($online) echo " (online)";
+		else echo " (offline)";
+
+		if ($showinfo) {
+			for ($showinfo as $info) {
+				$info = explode("|", $info);
+				if ($info[0] === $item)	echo " - " . $info[1];
+			}
+		}
+
+		echo "<br>\n";
+	}
+
 }
 
 function printQuotes() {
