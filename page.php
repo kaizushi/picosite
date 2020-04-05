@@ -74,7 +74,7 @@ function printDebugArray($msg, $array) {
         foreach ($array as $key => $value) printDebug($key . " = " . $value);
 }
 
-function transSecureSysName($string) {
+function transFilesyms($string) {
 	//dumb method name
 	$newstring = preg_replace("/[^A-Za-z0-9.-]/","",$string);
 	return $newstring;
@@ -321,19 +321,25 @@ function getPageFile($subpagedir = "[NONE]") {
 		$fn = $subpagedir . "/" . $_GET['sp'] . $inslang . ".sub.page";
 	}
 	
-	return $fn;
+	return transFilesyms($fn);
 }
 
 function printQuotes() {
-	if (!file_exits('quotes.txt')) {
+	if (!file_exists('quotes.txt')) {
 		echo SITENAME;
 		return;
 	}
 
-	$quotes = get_file_contents('quotes.txt');
-	$quotes = explode('\n', $quotes);
+	$quotes = file_get_contents('quotes.txt');
+	$quotes = explode("\n", $quotes);
 
-	echo $quotes[rand(0, sizeof($quotes) -1];
+	$quote = "";
+	while ($quote === "") {
+		$ar = array_rand($quotes);
+		$quote = $quotes[$ar];
+	}
+
+	echo $quote;
 }
 
 function printDomains($msg) {
