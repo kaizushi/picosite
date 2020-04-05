@@ -59,3 +59,45 @@ function checkServices($services) {
 	return array_unique($online);
 }
 
+function getServiceList() {
+	$svclist = file_get_contents(SVCLIST);
+	$svclist = explode("\n", $svclist);
+	return $svclist;
+}
+
+function getServDataLocation() {
+	$files = scandir(SVCDATA);
+	$files = sort($files);
+
+	// bootstrapping shit...
+	if (count($files)) === 0) return 1;
+	if (count($files)) === 1) {
+		$filenameparts = explode(".", $files[0]);
+		return intval($filenameparts[0]);
+	}
+
+	$fileold = 0;
+	$filefin = 0;
+	foreach ($files as $file) {
+		$filenameparts = explode(".", $file);
+
+		$filenum = intval($filenameparts[0]);
+		if ($filenum > $fileold) $filefin = $filenum
+		$fileold = $filenum;
+	}
+
+	$filefin++;
+
+	return $filefin;
+}
+
+function writeGoodServices($services) {
+	$services = checkServices($services);
+	$file = strval(getServDataLocation()) . ".dat";
+
+	$f = fopen($file, 'a');
+	foreach ($services as $svc) fwrite($f, "$svc\n");
+	fwrite($f, "!!READY!!");
+}
+
+function cleanServiceData() {
