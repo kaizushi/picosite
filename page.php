@@ -745,7 +745,10 @@ function printLinkTop() {
 	foreach ($ordered as $node => $title) {
 		if (!$rend) break;
 
-		if ($title === "%%HIDE%%") continue;
+		if ($title === "%%HIDE%%") {
+			$iters--;
+			continue;
+		}
 
 		if (is_null($_GET['l'])) {
 			echo"<a href=\"/page.php?q=$node\">$title</a>";
@@ -766,7 +769,10 @@ function printLinkTop() {
 
 	echo MENULINK_LFT;
 	foreach ($links as $node => $title) {
-		if ($title === "%%HIDE%%") continue;
+		if ($title === "%%HIDE%%") {
+			$iters--;
+			continue;
+		}
 		if (($node === "") || ($node == null)) {
 			continue;
 		}
