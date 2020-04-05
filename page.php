@@ -597,9 +597,6 @@ function printGuide() {
 }
 
 function printSubpage($groupname) {
-	$groupname = transSecureSysName($groupname); //this stops injection
-	$lang = transSecureSysName($_GET['l']);
-
 	$subpages = [];
 
 	if (!file_exists($groupname . '/')) {
