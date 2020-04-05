@@ -330,9 +330,10 @@ function printQuotes() {
 		return;
 	}
 
-	quotes = get_file_contents('quotes.txt')
+	$quotes = get_file_contents('quotes.txt');
+	$quotes = explode('\n', $quotes);
 
-	echo $quotes[rand(0, sizeof(quotes) -1];
+	echo $quotes[rand(0, sizeof($quotes) -1];
 }
 
 function printDomains($msg) {
