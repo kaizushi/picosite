@@ -348,17 +348,17 @@ function printServices() {
 
 	$newest = 0;
 	$selected = "";
-	foreach ($files as $file) {
-		$created = filectime($file);
-		if ($newest == 0) {
-			$newest = $created;
-			$selected = $file;
-			continue;
-		}
 
-		if ($created > $newest) {
-			$newest = $created;
-			$selected = $file;
+	foreach ($files as $file) {
+		$content = file_get_contents($file);
+		$ready = false;
+		foreach ($content as $data) if ($data === "!!READY!!") $ready = true;
+		if ($ready) {
+			if ($newest == 0) $newest = filectime($file);
+			if (filectime($file) > $newest) {
+				$newest = filectime($file);
+				$selected = $file;
+			}
 		}
 	}
 
@@ -377,7 +377,16 @@ function printServices() {
 		echo "$item ";
 
 		$online = false;
-		foreach ($services as $svc) if ($svc === $item) $online = true;
+		foreach ($services as $svc) 
+		{
+			$service = "";
+			$svc = explode("|", $svc);
+			if ($svc[1] === "") $service = $svc[0];
+			else $service = $svc[1];
+
+			if ($service === $item) $online = true;
+
+		}
 		if ($online) echo " (online)";
 		else echo " (offline)";
 
