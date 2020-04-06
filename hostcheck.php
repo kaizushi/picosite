@@ -7,13 +7,13 @@
 // is for picosite to then display this information.
 
 $_config_hc_srvclist = "servicelist.txt";
-$_config_hc_srvcdata = "data/";
+$_config_hc_srvcdata = "data/services/";
 $_config_hc_redirlim = 5;
 
 if (file_exists("settings.php")) include_once("settings.php");
 
-define("SVCLIST", "$_config_srvclist");
-define("SVCDATA", "$_config_srvcdata");
+define("SVCLIST", "$_config_hc_srvclist");
+define("SVCDATA", "$_config_hc_srvcdata");
 
 global $redir_count;
 $redir_count = 0;
@@ -29,34 +29,49 @@ function checkURL($url) {
 
 function checkServices($services, $base = "") {
 	$online = [];
-	$elsewhere = [];
 	foreach ($services as $svc) {
-		$curl = curl_init($svc);
+		echo "Checking service $svc\n";
+		$svc = trim(str_replace("\n", "", $svc));
+		$elsewhere = [];
+		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_HEADER, true);
 		curl_setopt($curl, CURLOPT_NOBODY, true);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER,1);
 		curl_setopt($curl, CURLOPT_TIMEOUT,10);
+		curl_setopt($curl, CURLOPT_URL,$svc);
 		$output = curl_exec($curl);
+		echo "curl output: $output\n";
 		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		if ($httpcode === 200 || $httpcode === 302) {
+		echo "HTTP code: $httpcode\n";
+		$error = curl_error($curl);
+		echo "Curl error: $error\n";
+		if ($httpcode === 200) {
+			echo "Response: 200 OK\n";
+			if ($base === "") $base = $svc;
 			array_push($online, "$svc|$base");
-		if ($httpcode === 301) {
+			curl_close($curl);
+			continue;
+		}
+		if (($httpcode === 301) OR ($httpcode === 302)) {
+			echo "Response: 301 or 302\n";
 			$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 			$headers = substr($output, 0, $header_size);
 			$headers = explode("\n", $headers);
+			curl_close($curl);
 			foreach ($headers as $header) {
-				$headparts = explode(":", $header);
-				if ($headparts[0] === "Location" && count($headparts) === 3) {
-					$url = trim($headparts[1] . ":" . $headparts[2]);
-					if (!checkURL($url)) continue;
-					array_push($elsewhere, $url);
-					$online = array_merge($online, checkServices($elsewhere, $url));
+				$headparts = explode(" ", $header);
+				if ($headparts[0] === "Location:") {
+					$url = $headparts[1];
+					echo "Checking redirect $url\n";
+					$arurl = []; array_push($arurl, $url);
+					array_push($elsewhere, checkServices($arurl, $svc));
+					array_merge($online, $elsewhere);
 				}
 			}
 		}
 	}
 	
-	return array_unique($online);
+	return $online;
 }
 
 function getServiceList() {
@@ -67,22 +82,15 @@ function getServiceList() {
 
 function getServDataLocation() {
 	$files = scandir(SVCDATA);
-	$files = sort($files);
-
-	// bootstrapping shit...
-	if (count($files)) === 0) return 1;
-	if (count($files)) === 1) {
-		$filenameparts = explode(".", $files[0]);
-		return intval($filenameparts[0]);
-	}
 
 	$fileold = 0;
 	$filefin = 0;
 	foreach ($files as $file) {
-		$filenameparts = explode(".", $file);
+		if ($file === "." || $file === "..") continue;
+		$fparts = explode(".", $file);
 
-		$filenum = intval($filenameparts[0]);
-		if ($filenum > $fileold) $filefin = $filenum
+		$filenum = intval($fparts[0]);
+		if ($filenum > $fileold) $filefin = $filenum;
 		$fileold = $filenum;
 	}
 
@@ -92,12 +100,19 @@ function getServDataLocation() {
 }
 
 function writeGoodServices($services) {
-	$services = checkServices($services);
-	$file = strval(getServDataLocation()) . ".dat";
+	$file = strval(SVCDATA . getServDataLocation()) . ".dat";
 
 	$f = fopen($file, 'a');
 	foreach ($services as $svc) fwrite($f, "$svc\n");
 	fwrite($f, "!!READY!!");
 }
 
-function cleanServiceData() {
+function hostcheck() {
+	$services = getServiceList();
+	$services = checkServices($services);
+	writeGoodServices($services);
+}
+
+hostcheck();
+
+?>
