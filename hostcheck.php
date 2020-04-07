@@ -28,6 +28,8 @@ function checkURL($url) {
 }
 
 function checkServices($services, $base = "") {
+	global $redir_count;
+
 	$online = [];
 	foreach ($services as $svc) {
 		echo "Checking service $svc\n";
@@ -40,11 +42,7 @@ function checkServices($services, $base = "") {
 		curl_setopt($curl, CURLOPT_TIMEOUT,10);
 		curl_setopt($curl, CURLOPT_URL,$svc);
 		$output = curl_exec($curl);
-		echo "curl output: $output\n";
 		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		echo "HTTP code: $httpcode\n";
-		$error = curl_error($curl);
-		echo "Curl error: $error\n";
 		if ($httpcode === 200) {
 			echo "Response: 200 OK\n";
 			if ($base === "") $base = $svc;
@@ -53,6 +51,8 @@ function checkServices($services, $base = "") {
 			continue;
 		}
 		if (($httpcode === 301) OR ($httpcode === 302)) {
+			$redir_count++;
+			if ($redir_count == 3) continue;
 			echo "Response: 301 or 302\n";
 			$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 			$headers = substr($output, 0, $header_size);
@@ -69,6 +69,7 @@ function checkServices($services, $base = "") {
 				}
 			}
 		}
+		$redir_count = 0;
 	}
 	
 	return $online;
