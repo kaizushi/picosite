@@ -6,7 +6,7 @@
 
 //default settings
 
-$_config_softname = "picosite 1.2.3";
+$_config_softname = "picosite 1.3.0";
 $_config_debugout = false;
 $_config_traceoff = true;
 $_config_sitename = "A New Picosite";
@@ -372,6 +372,8 @@ function printServices() {
 		$infos = file_get_contents(SERVLIST_INFO);
 		$infos = explode("\n", $infos);
 	}
+
+	echo "\n<br>";
 
 	foreach ($listed as $item) {
 		echo "$item ";
