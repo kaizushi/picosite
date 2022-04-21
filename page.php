@@ -47,6 +47,11 @@ define("SERVLIST_DATA", $_config_hc_srvcdata);
 define("SERVLIST_INFO", $_config_hc_srvcinfo);
 
 $_GET = array_map('strip_tags', $_GET);
+$_GET = array_map('htmlspecialchars', $_GET);
+
+// replace above with a regexp detector which faults on dodgy chars
+// in a fault just empty that get var so if any are not dodgy that
+// the show just goes on
 
 if (isset($argv[1])) $_GET["q"] = $argv[1];
 
