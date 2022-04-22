@@ -19,8 +19,28 @@ $_config_menurght = "";
 $_config_currsymb = "$";
 $_config_currdata = "%%NODATA%%"; 
 $_config_hc_srvclist = "servicelist.txt";
-$_config_hc_srvcdata = "data/";
+$_config_hc_srvcdata = "svcdata/";
 $_config_hc_srvcinfo = "serviceinfo.txt";
+
+// Below will be dictionaries which turn things into language
+// this will not be fully automated for a while, for now it just
+// gives english language versions of the service status checkers
+// status types. These are default values that can be changed in
+// settings.php if it exists. Dictionaries are actually PHP arrays!
+
+$_lang_servicetypes = array(
+	"available" => "Service was available",
+	"available-redirect" => "Redirected but available",
+	"missing" => "File not found on server",
+	"forbidden" => "Access denied to file on server",
+	"req-timeout" => "Timeout processing request",
+	"client-error" => "Misc client error from server",
+	"server-error" => "Server reports malfunction",
+	"connect-timeout" => "Connection to server timed out",
+	"checker-error" => "Fatal error from local service checker",
+	"checker-invalid" => "Invalid status from local service checker",
+	"unavailable" => "There was no local service data available",
+	);
 
 
 // You can change any of these settings by creating a settings.php
@@ -44,7 +64,7 @@ define("MENULINK_MID", $_config_menumidd);
 define("MENULINK_RGT", $_config_menurght);
 define("SERVLIST_LIST", $_config_hc_srvclist);
 define("SERVLIST_DATA", $_config_hc_srvcdata);
-define("SERVLIST_INFO", $_config_hc_srvcinfo);
+define("LANG_SERVICES", $_lang_servicetypes);
 
 $_GET = array_map('strip_tags', $_GET);
 $_GET = array_map('htmlspecialchars', $_GET);
@@ -342,70 +362,97 @@ function getPageFile($subpagedir = "[NONE]") {
 }
 
 function printServices() {
-	$showinfo = true;
+	$listfile = SERVLIST_LIST;
 
-	if (!file_exists(SERVLIST_LIST)) return;
+	// safety first!
 
-	if (!file_exists(SERVLIST_INFO)) $showinfo = false;
+	if (!file_exists($listfile)) {
+		echo "<p>There is no list of services to check.";
+		return;
+	}
 
-	$files = scandir(SERVLIST_DATA);
-	if (empty($files)) return;
+	$data_location = SERVLIST_DATA;
+	if (!transEnd($data_location, "/")) $data_location = $data_location . "/";
 
-	$newest = 0;
-	$selected = "";
+	// this does a safety test regarding if there is service data at all
+	$check_files = scandir($data_location);
+	if (empty($check_files)) {
+		echo "<p>There is no data on the status of listed services.";
+		return;
+	}
 
-	foreach ($files as $file) {
-		$content = file_get_contents($file);
-		$ready = false;
-		foreach ($content as $data) if ($data === "!!READY!!") $ready = true;
-		if ($ready) {
-			if ($newest == 0) $newest = filectime($file);
-			if (filectime($file) > $newest) {
-				$newest = filectime($file);
-				$selected = $file;
+	$service_listfile = file_get_contents($listfile);
+	$service_listfile = explode('\n',$server_list);
+	if (empty($service_list)) {
+		echo "<p>There service list file is empty.";
+	}
+
+	$service_list = array();
+	$names_list = array();
+
+	$names_exist = false;
+
+	foreach ($service_listfile as $listentry) {
+		$listing = explode("|",$listentry);
+		if (count($listing) == 2) {
+			$service = $listing[0];
+			array_push($service_list, $listing[0]);
+			$names_list[$listing[0]] = $listing[1];
+			$names_exist = true;
+		} elseif (count($listing == 1)) {
+			$service = $listing[0];
+			$names_list[$listing[0]] = $listing[0];
+		} else {
+			echo "<p>There are too many delimeters in one of the service listings!";
+			return;
+		}
+	}
+
+	$service_language = LANG_SERVICES;
+	$status_types = array_keys($service_language);
+	$service_status = array();
+
+	foreach ($service_list as $listing) {
+		$datafile = $data_location . $listing . ".dat";
+		
+		if (!file_exists($datafile)) $status = "unavailable";
+		else {
+			$filedata = file_get_contents($datafile); // i love E N G L I S H
+			$dataline = explode("\n", $filedata);
+			$dataline = $dataline[0];
+			
+			$invalid = true;
+			foreach ($status_types as $valid_status) {
+				if ($dataline === $valid_status) $invalid = false;
 			}
-		}
-	}
 
-	$services = file_get_contents($selected);
-	$services = explode("\n", $services);
-	
-	$listed = file_get_contents(SERVLIST_LIST);
-	$listed = explode("\n", $listed);
-
-	if ($showinfo) {
-		$infos = file_get_contents(SERVLIST_INFO);
-		$infos = explode("\n", $infos);
-	}
-
-	echo "\n<br>";
-
-	foreach ($listed as $item) {
-		echo "$item ";
-
-		$online = false;
-		foreach ($services as $svc) 
-		{
-			$service = "";
-			$svc = explode("|", $svc);
-			if ($svc[1] === "") $service = $svc[0];
-			else $service = $svc[1];
-
-			if ($service === $item) $online = true;
-
-		}
-		if ($online) echo " (online)";
-		else echo " (offline)";
-
-		if ($showinfo) {
-			foreach ($showinfo as $info) {
-				$info = explode("|", $info);
-				if ($info[0] === $item)	echo " - " . $info[1];
-			}
+			if (!$invalid) $status = $dataline;
+			else $status = "invalid";
 		}
 
-		echo "<br>\n";
+		$service_status[$listing] = $status;
 	}
+
+	// The next part writes the output
+
+	echo "<table>\n";
+
+	if ($names_exist) {
+		echo "<tr><td>Service Name</td><td>URL</td><td>Status</td></tr>\n";
+	} else {
+		echo "<tr><td>URL</td><td>Status</td></tr>\n";
+	}
+
+	foreach ($service_status as $service => $status) {
+		echo "<tr>";
+		if ($names_exist) {
+			echo "<td>" . $names_list[$service] . "</td>";
+		}
+		echo "<td>" . $service . "</td>";
+		echo "<td>" . $status_language[$status] . "</td>\n";
+	}
+
+	echo "</table>";
 }
 
 function printQuotes() {
