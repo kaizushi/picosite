@@ -20,7 +20,6 @@ $_config_currsymb = "$";
 $_config_currdata = "%%NODATA%%"; 
 $_config_hc_srvclist = "servicelist.txt";
 $_config_hc_srvcdata = "svcdata/";
-$_config_hc_srvcinfo = "serviceinfo.txt";
 
 // Below will be dictionaries which turn things into language
 // this will not be fully automated for a while, for now it just
@@ -413,7 +412,7 @@ function printServices() {
 	$service_status = array();
 
 	foreach ($service_list as $listing) {
-		$datafile = $data_location . $listing . ".dat";
+		$datafile = $data_location . md5($listing) . ".dat";
 		
 		if (!file_exists($datafile)) $status = "unavailable";
 		else {
