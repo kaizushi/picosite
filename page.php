@@ -36,6 +36,7 @@ $_lang_servicetypes = array(
 	"client-error" => "Misc client error from server",
 	"server-error" => "Server reports malfunction",
 	"connect-timeout" => "Connection to server timed out",
+	"url-error" => "Malformed URL when doing service check",
 	"checker-error" => "Fatal error from local service checker",
 	"checker-invalid" => "Invalid status from local service checker",
 	"unavailable" => "There was no local service data available",
@@ -394,13 +395,13 @@ function printServices() {
 	foreach ($service_listfile as $listentry) {
 		$listing = explode("|",$listentry);
 		if (count($listing) == 2) {
-			$service = $listing[0];
+			$service = trim($listing[0]);
 			array_push($service_list, $listing[0]);
-			$names_list[$listing[0]] = $listing[1];
+			$names_list[$listing[0]] = trim($listing[1]);
 			$names_exist = true;
 		} elseif (count($listing == 1)) {
 			$service = $listing[0];
-			$names_list[$listing[0]] = $listing[0];
+			$names_list[$listing[0]] = trim($listing[0]);
 		} else {
 			echo "<p>There are too many delimeters in one of the service listings!";
 			return;
