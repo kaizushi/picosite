@@ -7,7 +7,7 @@
 //default settings
 
 $_config_softname = "picosite 1.3.0";
-$_config_debugout = false;
+$_config_debugout = true;
 $_config_traceoff = true;
 $_config_sitename = "A New Picosite";
 $_config_sitelogo = "sitelogo.png";
@@ -19,7 +19,7 @@ $_config_menurght = "";
 $_config_currsymb = "$";
 $_config_currdata = "%%NODATA%%"; 
 $_config_hc_srvclist = "servicelist.txt";
-$_config_hc_srvcdata = "svcdata/";
+$_config_hc_srvcdata = "data/services";
 
 // Below will be dictionaries which turn things into language
 // this will not be fully automated for a while, for now it just
@@ -103,6 +103,19 @@ function printDebug($msg) {
 function printDebugArray($msg, $array) {
 	printDebug($msg);
         foreach ($array as $key => $value) printDebug($key . " = " . $value);
+}
+
+function transTruncatedHost($url) {
+	$parsed = parse_url($url);
+	$host = $parsed["host"];
+	$textLength = strlen($host);
+	$maxChars = 42;
+
+	if ($textLength >= 48) {
+		return substr_replace($host, '.......', $maxChars/2, $textLength-$maxChars);
+	} else {
+		return $host;
+	}
 }
 
 function transFilesyms($string) {
@@ -241,7 +254,6 @@ function getPageTitles($files, $subpage = "[NONE]") {
 			}
 		}
 
-		printDebug("getPageTitles(): \$ispub = " . getBool($ispub));
 		if (!$hastitle) $titledRefs[$node] = "Untitled Page";
 		if (!$ispub) $titledRefs[$node] = "%%HIDE%%";
 	}
@@ -374,17 +386,23 @@ function printServices() {
 	$data_location = SERVLIST_DATA;
 	if (!transEnd($data_location, "/")) $data_location = $data_location . "/";
 
+	if (!is_dir($data_location)) {
+		echo "<p>The service data directory ($data_location) does not exist.";
+		return;
+	}
+
 	// this does a safety test regarding if there is service data at all
 	$check_files = scandir($data_location);
-	if (empty($check_files)) {
+	if (count($check_files) == 2) { 
 		echo "<p>There is no data on the status of listed services.";
 		return;
 	}
 
 	$service_listfile = file_get_contents($listfile);
-	$service_listfile = explode('\n',$server_list);
-	if (empty($service_list)) {
-		echo "<p>There service list file is empty.";
+	$service_listfile = explode("\n",$service_listfile);
+	if (empty($service_listfile)) {
+		echo "<p>The service list file ($listfile) is empty.";
+		return;
 	}
 
 	$service_list = array();
@@ -393,28 +411,31 @@ function printServices() {
 	$names_exist = false;
 
 	foreach ($service_listfile as $listentry) {
+		if ($listentry === "") continue;
 		$listing = explode("|",$listentry);
 		if (count($listing) == 2) {
 			$service = trim($listing[0]);
-			array_push($service_list, $listing[0]);
-			$names_list[$listing[0]] = trim($listing[1]);
+			array_push($service_list, $service);
+			$names_list[$service] = trim($listing[1]);
 			$names_exist = true;
 		} elseif (count($listing == 1)) {
-			$service = $listing[0];
-			$names_list[$listing[0]] = trim($listing[0]);
+			$service = trim($listing[0]);
+			array_push($service_list, $service);
+			$names_list[$service] = $service;
 		} else {
 			echo "<p>There are too many delimeters in one of the service listings!";
 			return;
 		}
 	}
 
-	$service_language = LANG_SERVICES;
-	$status_types = array_keys($service_language);
+	$status_language = LANG_SERVICES;
+
+	$status_types = array_keys($status_language);
 	$service_status = array();
 
 	foreach ($service_list as $listing) {
 		$datafile = $data_location . md5($listing) . ".dat";
-		
+
 		if (!file_exists($datafile)) $status = "unavailable";
 		else {
 			$filedata = file_get_contents($datafile); // i love E N G L I S H
@@ -433,26 +454,18 @@ function printServices() {
 		$service_status[$listing] = $status;
 	}
 
-	// The next part writes the output
-
-	echo "<table>\n";
-
-	if ($names_exist) {
-		echo "<tr><td>Service Name</td><td>URL</td><td>Status</td></tr>\n";
-	} else {
-		echo "<tr><td>URL</td><td>Status</td></tr>\n";
-	}
+	echo "<table border=1>";
 
 	foreach ($service_status as $service => $status) {
-		echo "<tr>";
 		if ($names_exist) {
-			echo "<td>" . $names_list[$service] . "</td>";
+			echo "<tr><td><h3>" . $names_list[$service] . "</h3></td>\n";
+		} else {
+			echo "<tr><td><h3>Unnamed</h3></td>";
 		}
-		echo "<td>" . $service . "</td>";
-		echo "<td>" . $status_language[$status] . "</td>\n";
+		echo "<td>Hostname: <i><a href=\"$service\">" . transTruncatedHost($service) .
+								"</a></i><br>\n";
+		echo "Status: <b>" . $status_language[$status] . "</b></td></tr>";
 	}
-
-	echo "</table>";
 }
 
 function printQuotes() {
@@ -475,7 +488,6 @@ function printQuotes() {
 
 function printDomains($msg) {
 	if (file_exists("domainlist.txt")) {
-		printDebug("printDomians() domain list exists");
 		$domains = file_get_contents("domainlist.txt");
 		$domains = explode("\n", $domains);
 	} else {
@@ -537,7 +549,6 @@ function printItemListing() {
 
 	$datadir = CURRENCY_DAT;
         if (!transEnd($datadir,'/')) $datadir = $datadir . "/";
-	printDebug("printItemListing: the datadir is $datadir");
 
 	$oldmode = true;
 	if (!file_exists("itemlist.txt")) {
@@ -819,7 +830,6 @@ function printFile($file) {
 				}
 				if (transStart($line, "%%##price")) {
 					if (transStart($line, "%%##price=all")) {
-						printDebug("printFile: we are calling printItemList()");
 						printItemListing();
 					}
 				}
