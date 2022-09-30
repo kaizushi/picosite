@@ -847,60 +847,8 @@ function printPageBody() {
 	printFile($pagefile);
 }
 
-function printLinkTop() {
-	if (!is_null($_GET['l'])) $files = glob("./*.trans.page");
-	else $files = glob("./*.page");
-
-	$links = array();
-
-	$links = getPageTitles($files);
-
-	$ordered = array();
-
-	$file = file_get_contents("menulayout.txt");
-	$layout = explode("\n", $file);
-
-	$newlinks = [];
-
-	$rend = true;
-
-	foreach ($layout as $node) {
-		if (($links[$node] === "") || ($links[$node] == null)) {
-			continue;
-		}
-		$ordered[$node] = $links[$node];
-		unset($links[$node]);
-	}
-
-	if (count($layout) == 0) $rend = false;
-
-	$iters = count($ordered);
-	$incr = 1;
-	if ($rend) echo MENULINK_LFT;
-	foreach ($ordered as $node => $title) {
-		if (!$rend) break;
-
-		if ($title === "%%HIDE%%") {
-			$iters--;
-			continue;
-		}
-
-		if (is_null($_GET['l'])) {
-			echo"<a href=\"/page.php?q=$node\">$title</a>";
-		} else {
-			$lang = $_GET['l'];
-			echo "<a href=\"/page.php?q=$node&l=$lang\">$title</a>";
-		}
-
-		if ($incr == $iters) break;
-		$incr = $incr + 1;
-
-		echo MENULINK_MID;
-	}
-	if ($rend) echo MENULINK_RGT . "<br>\n";
-
-	$iters=count($links);
-	$incr=1;
+function printLinks($links) {
+	$iters = count($links);
 
 	echo MENULINK_LFT;
 	foreach ($links as $node => $title) {
@@ -908,23 +856,50 @@ function printLinkTop() {
 			$iters--;
 			continue;
 		}
-		if (($node === "") || ($node == null)) {
+		if ($title === "" || $node == null) {
 			continue;
 		}
 
 		if (is_null($_GET['l'])) {
 			echo "<a href=\"/page.php?q=$node\">$title</a>";
 		} else {
-			$lang = $_GET['l'];
 			echo "<a href=\"/page.php?q=$node&l=$lang\">$title</a>";
 		}
 
-		if ($incr == $iters) break;
-		$incr = $incr + 1;
-
-		echo MENULINK_MID;
+		if ($node !== array_key_last($links)) echo MENULINK_MID;
 	}
 	echo MENULINK_RGT;
+	echo "<br>";
+}
+
+function printLinkTop() {
+	if (!is_null($_GET['l'])) $files = glob("./*.trans.page");
+	else $files = glob("./*.page");
+
+	$links = getPageTitles($files);
+
+	$layout_exists = False;
+
+	if (file_exists("menulayout.txt")) {
+		$file = file_get_contents("menulayout.txt");
+		$layout = explode("\n", $file);
+		if (count($layout) == 0) {
+			echo "The file menulayout.txt is empty!<br>";
+		} else {
+			$ordered = array();
+
+			foreach ($layout as $node) {
+				if (($links[$node] === "") || ($links[$node] == null)) {
+					continue;
+				}
+				$ordered[$node] = $links[$node];
+				unset($links[$node]);
+			}
+		}
+		printLinks($ordered);
+	}
+
+	printLinks($links);
 }
 
 function printLinksLangs() {
